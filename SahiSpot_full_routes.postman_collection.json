@@ -1,0 +1,397 @@
+{
+  "info": {
+    "name": "SahiSpot Full Routes (Backend a/)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0",
+    "description": "All routes found in backend folder `a/src/` (not generated from Swagger). Auth uses cookie named `token`; after calling `/api/v1/login` or `/api/v1/admin/login`, Postman will reuse cookies automatically if cookies are enabled."
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "adminId",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check (GET /health)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/health"
+      }
+    },
+    {
+      "name": "Root (GET /)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/"
+      }
+    },
+    {
+      "name": "Signup Send OTP (POST /api/v1/signup)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"YourStrongPassword\"\n}"
+        },
+        "url": "{{baseUrl}}/api/v1/signup"
+      }
+    },
+    {
+      "name": "Resend Signup OTP (POST /api/v1/resend-otp)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\"\n}"
+        },
+        "url": "{{baseUrl}}/api/v1/resend-otp"
+      }
+    },
+    {
+      "name": "Verify Signup OTP (POST /api/v1/verify-otp)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"YourStrongPassword\",\n  \"otp\": \"123456\"\n}"
+        },
+        "url": "{{baseUrl}}/api/v1/verify-otp"
+      }
+    },
+    {
+      "name": "User Login (POST /api/v1/login)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"YourStrongPassword\"\n}"
+        },
+        "url": "{{baseUrl}}/api/v1/login"
+      }
+    },
+    {
+      "name": "Logout (POST /api/v1/logout)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/logout"
+      }
+    },
+    {
+      "name": "Edit Profile (PUT /api/v1/profile/edit) [multipart/form-data]",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "name",
+              "value": "John Doe",
+              "type": "text"
+            },
+            {
+              "key": "college_name",
+              "value": "Example University",
+              "type": "text"
+            },
+            {
+              "key": "year_passing",
+              "value": "2026",
+              "type": "text"
+            },
+            {
+              "key": "linkedin_url",
+              "value": "https://linkedin.com/in/example",
+              "type": "text"
+            },
+            {
+              "key": "img",
+              "type": "file",
+              "src": ""
+            }
+          ]
+        },
+        "url": "{{baseUrl}}/api/v1/profile/edit"
+      }
+    },
+    {
+      "name": "Get Profile (GET /api/v1/profile)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/profile"
+      }
+    },
+    {
+      "name": "Contact Us (POST /api/v1/contact/)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"message\": \"Hello, this is a test message.\"\n}"
+        },
+        "url": "{{baseUrl}}/api/v1/contact/"
+      }
+    },
+    {
+      "name": "Forgot Password Send OTP (POST /api/v1/forgot-password)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"john@example.com\"\n}"
+        },
+        "url": "{{baseUrl}}/api/v1/forgot-password"
+      }
+    },
+    {
+      "name": "Forgot Password Resend OTP (POST /api/v1/forgot-password/resend)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"john@example.com\"\n}"
+        },
+        "url": "{{baseUrl}}/api/v1/forgot-password/resend"
+      }
+    },
+    {
+      "name": "Forgot Password Verify OTP (POST /api/v1/forgot-password/verify-otp)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"john@example.com\",\n  \"otp\": \"123456\"\n}"
+        },
+        "url": "{{baseUrl}}/api/v1/forgot-password/verify-otp"
+      }
+    },
+    {
+      "name": "Forgot Password Reset (POST /api/v1/forgot-password/reset)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"john@example.com\",\n  \"newPassword\": \"NewStrongPassword\"\n}"
+        },
+        "url": "{{baseUrl}}/api/v1/forgot-password/reset"
+      }
+    },
+    {
+      "name": "Admin Login (POST /api/v1/admin/login)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"AdminStrongPassword\"\n}"
+        },
+        "url": "{{baseUrl}}/api/v1/admin/login"
+      }
+    },
+    {
+      "name": "Admin Logout (POST /api/v1/admin/logout)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/admin/logout"
+      }
+    },
+    {
+      "name": "Admin Create (POST /api/v1/admin/create-api)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Admin User\",\n  \"email\": \"admin@example.com\",\n  \"password\": \"AdminStrongPassword\"\n}"
+        },
+        "url": "{{baseUrl}}/api/v1/admin/create-api"
+      }
+    },
+    {
+      "name": "Create Admin by Super Admin (POST /api/v1/admin/create) [cookie token required]",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Admin User 2\",\n  \"email\": \"admin2@example.com\",\n  \"password\": \"AdminStrongPassword2\"\n}"
+        },
+        "url": "{{baseUrl}}/api/v1/admin/create"
+      }
+    },
+    {
+      "name": "Admin List (GET /api/v1/admin/list) [cookie token required]",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/admin/list"
+      }
+    },
+    {
+      "name": "Delete Admin (DELETE /api/v1/admin/{{adminId}}) [cookie token required]",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/admin/{{adminId}}"
+      }
+    },
+    {
+      "name": "Edit Admin (PUT /api/v1/admin/{{adminId}}) [cookie token required]",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Admin User Edited\",\n  \"email\": \"admin@example.com\",\n  \"password\": \"OptionalNewPassword\"\n}"
+        },
+        "url": "{{baseUrl}}/api/v1/admin/{{adminId}}"
+      }
+    },
+    {
+      "name": "Admin All Users (GET /api/v1/admin/allUser) [cookie token required]",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/admin/allUser"
+      }
+    },
+    {
+      "name": "Add Parking (POST /api/v1/parking/add) [multipart/form-data + images[]]",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "name",
+              "value": "SahiSpot Parking 1",
+              "type": "text"
+            },
+            {
+              "key": "city",
+              "value": "New Delhi",
+              "type": "text"
+            },
+            {
+              "key": "latitude",
+              "value": "28.6139",
+              "type": "text"
+            },
+            {
+              "key": "longitude",
+              "value": "77.2090",
+              "type": "text"
+            },
+            {
+              "key": "price_per_hour",
+              "value": "99",
+              "type": "text"
+            },
+            {
+              "key": "total_slots",
+              "value": "50",
+              "type": "text"
+            },
+            {
+              "key": "images",
+              "type": "file",
+              "src": ""
+            },
+            {
+              "key": "images",
+              "type": "file",
+              "src": ""
+            }
+          ]
+        },
+        "url": "{{baseUrl}}/api/v1/parking/add"
+      }
+    }
+  ]
+}
+

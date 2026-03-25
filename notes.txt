@@ -1,0 +1,3 @@
+app.get("/profile", authMiddleware, (req, res) => {
+  res.json({ message: "Your profile", user: req.user });
+});
