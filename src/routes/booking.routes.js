@@ -7,15 +7,12 @@ const router = Router();
 
 router.use(authMiddleware);
 
-// User: create booking, view own bookings
 router.post("/", allowRoles("user", "admin", "super_admin"), bookingController.createBooking);
 router.get("/my", bookingController.myBookings);
 router.get("/:id", bookingController.getBooking);
 
-// User: cancel own booking
 router.patch("/:id/cancel", bookingController.cancelBooking);
 
-// Admin / owner: complete booking
 router.patch("/:id/complete", allowRoles("admin", "super_admin", "owner"), bookingController.completeBooking);
 
 export default router;

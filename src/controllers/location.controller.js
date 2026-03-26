@@ -2,7 +2,6 @@ import * as locationService from "../services/location.service.js";
 import { successResponse, errorResponse, paginatedResponse } from "../utils/response.js";
 import { requireFields, isValidLatLng, parsePagination } from "../utils/validate.js";
 
-// ─── GET NEARBY ───────────────────────────────────────────────────────────────
 export async function getNearby(req, res) {
   try {
     const { lat, lng, radius = 10, city, type } = req.query;
@@ -22,7 +21,6 @@ export async function getNearby(req, res) {
   }
 }
 
-// ─── GET ALL ──────────────────────────────────────────────────────────────────
 export async function getAll(req, res) {
   try {
     const { city } = req.query;
@@ -34,7 +32,6 @@ export async function getAll(req, res) {
   }
 }
 
-// ─── GET ONE ──────────────────────────────────────────────────────────────────
 export async function getOne(req, res) {
   try {
     const location = await locationService.getLocationById(req.params.id);
@@ -45,7 +42,6 @@ export async function getOne(req, res) {
   }
 }
 
-// ─── CREATE ───────────────────────────────────────────────────────────────────
 export async function create(req, res) {
   try {
     const missing = requireFields(req.body, ["name", "address", "city", "state", "latitude", "longitude"]);
@@ -62,7 +58,6 @@ export async function create(req, res) {
   }
 }
 
-// ─── UPDATE ───────────────────────────────────────────────────────────────────
 export async function update(req, res) {
   try {
     const updated = await locationService.updateLocation(req.params.id, req.user.id, req.body);
@@ -73,7 +68,6 @@ export async function update(req, res) {
   }
 }
 
-// ─── DELETE ───────────────────────────────────────────────────────────────────
 export async function remove(req, res) {
   try {
     const count = await locationService.deleteLocation(req.params.id, req.user.id);

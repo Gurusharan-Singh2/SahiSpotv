@@ -1,13 +1,13 @@
 import { v2 as cloudinary } from "cloudinary";
 
-// Config
+
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Upload Image
+
 export const uploadToCloudinary = (fileBuffer) => {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
@@ -29,7 +29,7 @@ export const uploadToCloudinary = (fileBuffer) => {
   });
 };
 
-// Delete Image
+
 export const deleteFromCloudinary = async (imageUrl) => {
   try {
     const parts = imageUrl.split("/");

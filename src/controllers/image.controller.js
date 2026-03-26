@@ -1,7 +1,6 @@
 import * as imageService from "../services/image.service.js";
 import { successResponse, errorResponse } from "../utils/response.js";
 
-// ─── UPLOAD IMAGE ─────────────────────────────────────────────────────────────
 export async function uploadImage(req, res) {
   try {
     if (!req.file) return errorResponse(res, "No image file provided", 400);
@@ -13,7 +12,6 @@ export async function uploadImage(req, res) {
   }
 }
 
-// ─── GET IMAGES ───────────────────────────────────────────────────────────────
 export async function getImages(req, res) {
   try {
     const images = await imageService.getImagesByLocation(req.params.locationId);
@@ -23,7 +21,6 @@ export async function getImages(req, res) {
   }
 }
 
-// ─── DELETE IMAGE ─────────────────────────────────────────────────────────────
 export async function deleteImage(req, res) {
   try {
     const result = await imageService.deleteParkingImage(req.params.imageId, req.user.id);

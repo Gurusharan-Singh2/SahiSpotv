@@ -9,7 +9,6 @@ const ensureRedisConnection = async () => {
 };
 import { sendEmailandOtp, sendForget } from "./sendOtp.js";
 
-
 export const checkOtpRestrictions = async (identifier) => {
   await ensureRedisConnection();
   const lockKey = `otp_lock:${identifier}`;
@@ -43,15 +42,15 @@ export const checkOtpRestrictions = async (identifier) => {
   return { success: true };
 };
 
-
 export const trackOtpRequests = async (identifier) => {
   await ensureRedisConnection();
   const otpRequestKey = `otp_request_count:${identifier}`;
   const spamLockKey = `otp_spam_lock:${identifier}`;
 
   const currentCount = parseInt((await redis.get(otpRequestKey)) || "0");
+  const otpLimit = parseInt(process.env.OTP_LIMIT) || 2;
 
-  if (currentCount >= 2) {
+  if (currentCount >= otpLimit) {
     await redis.set(spamLockKey, "locked", "EX", 3600);
 
     return {
@@ -64,7 +63,6 @@ export const trackOtpRequests = async (identifier) => {
   await redis.set(otpRequestKey, currentCount + 1, "EX", 3600);
   return { success: true };
 };
-
 
 export const sendOtpByEmail = async (username, identifier) => {
   await ensureRedisConnection();

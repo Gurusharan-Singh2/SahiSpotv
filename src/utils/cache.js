@@ -1,8 +1,5 @@
 import { getRedis } from "../config/redis.js";
 
-/**
- * Get a cached value by key, automatically parses JSON.
- */
 export async function cacheGet(key) {
   try {
     const redis = getRedis();
@@ -14,9 +11,6 @@ export async function cacheGet(key) {
   }
 }
 
-/**
- * Set a cache key with optional TTL (seconds). Serialises value to JSON.
- */
 export async function cacheSet(key, value, ttlSeconds = 60) {
   try {
     const redis = getRedis();
@@ -26,9 +20,6 @@ export async function cacheSet(key, value, ttlSeconds = 60) {
   }
 }
 
-/**
- * Delete one or more cache keys.
- */
 export async function cacheDel(...keys) {
   try {
     const redis = getRedis();
@@ -38,10 +29,6 @@ export async function cacheDel(...keys) {
   }
 }
 
-/**
- * Cache-aside pattern helper.
- * Tries to fetch from cache; if miss, calls `fetchFn`, stores result, returns it.
- */
 export async function withCache(key, fetchFn, ttlSeconds = 60) {
   const cached = await cacheGet(key);
   if (cached !== null) return cached;

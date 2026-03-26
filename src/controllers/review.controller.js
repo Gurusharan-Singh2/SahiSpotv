@@ -2,7 +2,6 @@ import * as reviewService from "../services/review.service.js";
 import { successResponse, errorResponse, paginatedResponse } from "../utils/response.js";
 import { requireFields, parsePagination } from "../utils/validate.js";
 
-// ─── ADD REVIEW ───────────────────────────────────────────────────────────────
 export async function addReview(req, res) {
   try {
     const missing = requireFields(req.body, ["rating"]);
@@ -20,7 +19,6 @@ export async function addReview(req, res) {
   }
 }
 
-// ─── GET REVIEWS ──────────────────────────────────────────────────────────────
 export async function getReviews(req, res) {
   try {
     const { page, limit } = parsePagination(req.query);
@@ -41,7 +39,6 @@ export async function getReviews(req, res) {
   }
 }
 
-// ─── DELETE REVIEW ────────────────────────────────────────────────────────────
 export async function deleteReview(req, res) {
   try {
     await reviewService.deleteReview(req.params.reviewId, req.user.id);

@@ -15,7 +15,7 @@ export default {
       idleTimeoutMillis: 60000,
     },
     migrations: {
-      // When running knex with --knexfile src/knexfile.js, knex sets CWD to `src/`.
+
       directory: "./migrations",
     },
   },

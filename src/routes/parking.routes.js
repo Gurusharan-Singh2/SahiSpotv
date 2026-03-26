@@ -11,7 +11,6 @@ const router = Router();
 
 router.use("/locations", locationRoutes);
 
-// Nested under locations
 router.use("/locations/:locationId/slots", slotRoutes);
 router.use("/locations/:locationId/images", imageRoutes);
 router.use("/locations/:locationId/reviews", reviewRoutes);

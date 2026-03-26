@@ -2,7 +2,6 @@ import * as bookingService from "../services/booking.service.js";
 import { successResponse, errorResponse, paginatedResponse } from "../utils/response.js";
 import { requireFields, parsePagination } from "../utils/validate.js";
 
-// ─── CREATE BOOKING ───────────────────────────────────────────────────────────
 export async function createBooking(req, res) {
   try {
     const missing = requireFields(req.body, ["slot_id", "location_id", "start_time", "end_time"]);
@@ -15,7 +14,6 @@ export async function createBooking(req, res) {
   }
 }
 
-// ─── CANCEL BOOKING ───────────────────────────────────────────────────────────
 export async function cancelBooking(req, res) {
   try {
     const booking = await bookingService.cancelBooking(req.params.id, req.user.id);
@@ -25,7 +23,6 @@ export async function cancelBooking(req, res) {
   }
 }
 
-// ─── COMPLETE BOOKING ─────────────────────────────────────────────────────────
 export async function completeBooking(req, res) {
   try {
     const booking = await bookingService.completeBooking(req.params.id);
@@ -35,7 +32,6 @@ export async function completeBooking(req, res) {
   }
 }
 
-// ─── MY BOOKINGS ──────────────────────────────────────────────────────────────
 export async function myBookings(req, res) {
   try {
     const { page, limit } = parsePagination(req.query);
@@ -46,12 +42,11 @@ export async function myBookings(req, res) {
   }
 }
 
-// ─── GET BOOKING BY ID ────────────────────────────────────────────────────────
 export async function getBooking(req, res) {
   try {
     const booking = await bookingService.getBookingById(req.params.id);
     if (!booking) return errorResponse(res, "Booking not found", 404);
-    // Only the booking owner or admin can view
+
     if (booking.user_id !== req.user.id && !["admin", "super_admin"].includes(req.user.role)) {
       return errorResponse(res, "Forbidden", 403);
     }

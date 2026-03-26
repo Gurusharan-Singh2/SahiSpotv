@@ -4,7 +4,6 @@ import { requireFields } from "../utils/validate.js";
 
 const VALID_TYPES = ["car", "bike", "ev"];
 
-// ─── CREATE SINGLE SLOT ───────────────────────────────────────────────────────
 export async function createSlot(req, res) {
   try {
     const missing = requireFields(req.body, ["slot_number", "type"]);
@@ -20,7 +19,6 @@ export async function createSlot(req, res) {
   }
 }
 
-// ─── CREATE BULK SLOTS ────────────────────────────────────────────────────────
 export async function createBulkSlots(req, res) {
   try {
     const { slots } = req.body;
@@ -39,7 +37,6 @@ export async function createBulkSlots(req, res) {
   }
 }
 
-// ─── GET SLOTS ────────────────────────────────────────────────────────────────
 export async function getSlots(req, res) {
   try {
     const { type } = req.query;
@@ -50,7 +47,6 @@ export async function getSlots(req, res) {
   }
 }
 
-// ─── UPDATE SLOT ──────────────────────────────────────────────────────────────
 export async function updateSlot(req, res) {
   try {
     if (req.body.type && !VALID_TYPES.includes(req.body.type)) {
@@ -63,7 +59,6 @@ export async function updateSlot(req, res) {
   }
 }
 
-// ─── DELETE SLOT ──────────────────────────────────────────────────────────────
 export async function deleteSlot(req, res) {
   try {
     await slotService.deleteSlot(req.params.slotId);

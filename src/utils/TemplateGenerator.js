@@ -255,7 +255,6 @@ export const generateForgotPasswordTemplate = (otp, name) => `
 </html>
 `;
 
-
 export const generateContactUsTemplate = ({ name, email, message }) => `
 <!DOCTYPE html>
 <html lang="en">
@@ -405,7 +404,6 @@ export const generateContactUsTemplate = ({ name, email, message }) => `
 </body>
 </html>
 `;
-
 
 export const generateContactAutoReplyTemplate = (name) => `
 <!DOCTYPE html>

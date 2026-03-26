@@ -1,6 +1,4 @@
-/**
- * Reusable API response helpers
- */
+
 
 export const successResponse = (res, data = null, message = "Success", statusCode = 200) => {
   const payload = { success: true, message };

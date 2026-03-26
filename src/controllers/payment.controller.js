@@ -2,20 +2,30 @@ import * as paymentService from "../services/payment.service.js";
 import { successResponse, errorResponse, paginatedResponse } from "../utils/response.js";
 import { requireFields, parsePagination } from "../utils/validate.js";
 
-// ─── CREATE PAYMENT ───────────────────────────────────────────────────────────
-export async function createPayment(req, res) {
+export async function createOrder(req, res) {
   try {
     const missing = requireFields(req.body, ["booking_id"]);
     if (missing.length) return errorResponse(res, `Missing fields: ${missing.join(", ")}`, 400);
 
-    const payment = await paymentService.createPayment(req.user.id, req.body);
-    return successResponse(res, payment, "Payment successful", 201);
+    const orderData = await paymentService.createRazorpayOrder(req.user.id, req.body);
+    return successResponse(res, orderData, "Razorpay order created", 201);
   } catch (err) {
     return errorResponse(res, err.message || "Server error", err?.statusCode || 500);
   }
 }
 
-// ─── GET PAYMENT BY BOOKING ───────────────────────────────────────────────────
+export async function verifyPayment(req, res) {
+  try {
+    const missing = requireFields(req.body, ["razorpay_order_id", "razorpay_payment_id", "razorpay_signature", "booking_id"]);
+    if (missing.length) return errorResponse(res, `Missing fields: ${missing.join(", ")}`, 400);
+
+    const payment = await paymentService.verifyRazorpayPayment(req.user.id, req.body);
+    return successResponse(res, payment, "Payment verified successfully", 200);
+  } catch (err) {
+    return errorResponse(res, err.message || "Server error", err?.statusCode || 500);
+  }
+}
+
 export async function getPaymentByBooking(req, res) {
   try {
     const payment = await paymentService.getPaymentByBooking(req.params.bookingId);
@@ -26,7 +36,6 @@ export async function getPaymentByBooking(req, res) {
   }
 }
 
-// ─── MY PAYMENTS ──────────────────────────────────────────────────────────────
 export async function myPayments(req, res) {
   try {
     const { page, limit } = parsePagination(req.query);

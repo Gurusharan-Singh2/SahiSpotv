@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken";
 import db from "../config/db.js";
 
-// 🔐 MAIN AUTH
 export const authMiddleware = async (req, res, next) => {
   try {
     const token = req.cookies?.token;
@@ -38,7 +37,6 @@ export const authMiddleware = async (req, res, next) => {
   }
 };
 
-// 🔐 ADMIN AUTH (uses the same `token` cookie, but validates against `admins` table)
 export const adminAuth = async (req, res, next) => {
   try {
     const token = req.cookies?.token;
@@ -65,7 +63,6 @@ export const adminAuth = async (req, res, next) => {
   }
 };
 
-// 🔐 SUPER ADMIN AUTH
 export const superAdminAuth = async (req, res, next) => {
   try {
     const token = req.cookies?.token;

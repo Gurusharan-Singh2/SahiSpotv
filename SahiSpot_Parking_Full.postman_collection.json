@@ -397,15 +397,27 @@
       "name": "💳 Payments",
       "item": [
         {
-          "name": "Create Payment",
+          "name": "Create Order",
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"booking_id\": 1,\n  \"payment_method\": \"online\",\n  \"transaction_id\": \"TXN_ABC123\"\n}"
+              "raw": "{\n  \"booking_id\": 1\n}"
             },
-            "url": "{{baseUrl}}/api/v1/parking/payments"
+            "url": "{{baseUrl}}/api/v1/parking/payments/order"
+          }
+        },
+        {
+          "name": "Verify Payment",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"booking_id\": 1,\n  \"razorpay_order_id\": \"order_...\",\n  \"razorpay_payment_id\": \"pay_...\",\n  \"razorpay_signature\": \"...\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/parking/payments/verify"
           }
         },
         {

@@ -1,17 +1,15 @@
 import db from "../config/db.js";
 
-// ─── CREATE SLOT ──────────────────────────────────────────────────────────────
 export async function createSlot(locationId, data) {
   const [id] = await db("parking_slots").insert({
     location_id: locationId,
     slot_number: data.slot_number,
-    type: data.type,       // car | bike | ev
+    type: data.type,
     is_available: 1,
   });
   return db("parking_slots").where({ id }).first();
 }
 
-// ─── CREATE BULK SLOTS ────────────────────────────────────────────────────────
 export async function createBulkSlots(locationId, slots) {
   const rows = slots.map((s) => ({
     location_id: locationId,
@@ -22,19 +20,16 @@ export async function createBulkSlots(locationId, slots) {
   await db("parking_slots").insert(rows);
 }
 
-// ─── GET SLOTS BY LOCATION ────────────────────────────────────────────────────
 export async function getSlotsByLocation(locationId, type) {
   let query = db("parking_slots").where({ location_id: locationId });
   if (type) query = query.where({ type });
   return query.select("*");
 }
 
-// ─── GET SLOT BY ID ───────────────────────────────────────────────────────────
 export async function getSlotById(slotId) {
   return db("parking_slots").where({ id: slotId }).first();
 }
 
-// ─── UPDATE SLOT ──────────────────────────────────────────────────────────────
 export async function updateSlot(slotId, data) {
   const allowed = ["slot_number", "type", "is_available"];
   const updates = {};
@@ -43,7 +38,6 @@ export async function updateSlot(slotId, data) {
   return db("parking_slots").where({ id: slotId }).first();
 }
 
-// ─── DELETE SLOT ──────────────────────────────────────────────────────────────
 export async function deleteSlot(slotId) {
   return db("parking_slots").where({ id: slotId }).delete();
 }

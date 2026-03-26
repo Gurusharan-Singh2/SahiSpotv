@@ -6,13 +6,6 @@ const groq = new Groq({
   apiKey: process.env.GROQ_API,
 });
 
-
-
-
-
-
-
-
 export async function generateInterviewQuestions({
   jobRole,
   jobDescription,
@@ -68,9 +61,6 @@ export async function generateInterviewQuestions({
     throw error;
   }
 }
-
-
-
 
 export async function generateInterviewFeedback({
   jobRole,
@@ -140,7 +130,6 @@ export async function generateInterviewFeedback({
         };
       });
 
-
     parsed.overallScore = Math.round(
       parsed.feedback.reduce((sum, f) => sum + f.score, 0) /
       parsed.feedback.length
@@ -153,10 +142,8 @@ export async function generateInterviewFeedback({
   }
 }
 
-
 export async function analyzeResumeWithAI({ resumeText, enableAutoRewrite }) {
   try {
-
 
     const messages = [
       { role: "system", content: resumeAnalyzerSystemPrompt },
@@ -189,7 +176,4 @@ export async function analyzeResumeWithAI({ resumeText, enableAutoRewrite }) {
     throw error;
   }
 }
-
-
-
 

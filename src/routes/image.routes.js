@@ -4,10 +4,9 @@ import { allowRoles } from "../middleware/role.middleware.js";
 import multer from "multer";
 import * as imageController from "../controllers/image.controller.js";
 
-// Use memory storage so buffer is available for Cloudinary streaming
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB
+  limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter(req, file, cb) {
     if (!file.mimetype.startsWith("image/")) {
       return cb(new Error("Invalid image type"));
@@ -18,10 +17,8 @@ const upload = multer({
 
 const router = Router({ mergeParams: true });
 
-// Public: get images for a location
 router.get("/", imageController.getImages);
 
-// Owner: upload image
 router.post(
   "/",
   authMiddleware,
@@ -30,7 +27,6 @@ router.post(
   imageController.uploadImage
 );
 
-// Owner: delete image
 router.delete(
   "/:imageId",
   authMiddleware,

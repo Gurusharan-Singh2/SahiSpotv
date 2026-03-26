@@ -1,6 +1,5 @@
 import db from "../config/db.js";
 
-// ─── TOGGLE FAVORITE ──────────────────────────────────────────────────────────
 export async function toggleFavorite(userId, locationId) {
   const existing = await db("favorites").where({ user_id: userId, location_id: locationId }).first();
 
@@ -9,7 +8,6 @@ export async function toggleFavorite(userId, locationId) {
     return { action: "removed", locationId };
   }
 
-  // Verify location exists
   const location = await db("parking_locations").where({ id: locationId }).first();
   if (!location) throw { statusCode: 404, message: "Location not found" };
 
@@ -17,7 +15,6 @@ export async function toggleFavorite(userId, locationId) {
   return { action: "added", locationId, id };
 }
 
-// ─── GET USER FAVORITES ───────────────────────────────────────────────────────
 export async function getUserFavorites(userId, { page = 1, limit = 20 } = {}) {
   const offset = (page - 1) * limit;
 

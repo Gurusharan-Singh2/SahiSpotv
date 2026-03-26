@@ -4,16 +4,10 @@ import mammoth from "mammoth";
 export async function extractResumeText(file) {
   if (!file) return "";
 
-  // ========================
-  // 📄 PDF FILE
-  // ========================
   if (file.mimetype === "application/pdf") {
     return await extractPdfText(file.buffer);
   }
 
-  // ========================
-  // 📄 DOCX / DOC FILE
-  // ========================
   if (
     file.mimetype ===
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
@@ -28,9 +22,6 @@ export async function extractResumeText(file) {
   return "";
 }
 
-// ========================
-// 🔥 PDF2JSON TEXT EXTRACTOR
-// ========================
 function extractPdfText(buffer) {
   return new Promise((resolve, reject) => {
     const pdfParser = new PDFParser();
@@ -65,10 +56,6 @@ function extractPdfText(buffer) {
     pdfParser.parseBuffer(buffer);
   });
 }
-
-// ========================
-// 🔥 UTIL FUNCTIONS
-// ========================
 
 export function cleanJsonResponse(text) {
   if (!text) return "";

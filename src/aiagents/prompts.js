@@ -46,7 +46,6 @@ QUESTION MIX RULES:
 Current Date: ${new Date().toUTCString()}
 `;
 
-
 export const feedBackPrompt = `
 You are an experienced technical interviewer and career coach.
 
@@ -92,8 +91,6 @@ FEEDBACK DEPTH BY EXPERIENCE:
 
 Current Date: ${new Date().toUTCString()}
 `;
-
-
 
 export const resumeAnalyzerSystemPrompt = `
 You are a senior ATS (Applicant Tracking System) evaluation engine used by hiring platforms.
@@ -172,8 +169,6 @@ A) Metrics Evaluation:
 
    - If metrics are present in some bullets but not consistently:
      atsScore = MIN(atsScore, 85)
-
-
 
 B) If one or more CORE skills are missing:
    atsScore = MIN(atsScore, 69)
@@ -256,5 +251,4 @@ ANALYSIS GOALS
 
 Current Date: ${new Date().toUTCString()}
 `;
-
 

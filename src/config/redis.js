@@ -8,7 +8,7 @@ export function getRedis() {
       host: process.env.REDIS_HOST,
       port: process.env.REDIS_PORT,
       password: process.env.REDIS_PASS,
-      lazyConnect: true, // 🔥 VERY IMPORTANT
+      lazyConnect: true,
       maxRetriesPerRequest: 1,
     });
 

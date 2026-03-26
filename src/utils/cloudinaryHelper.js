@@ -6,12 +6,6 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-/**
- * Upload a file buffer to Cloudinary
- * @param {Buffer} buffer - File buffer from multer memory storage
- * @param {string} folder - Cloudinary folder path
- * @returns {Promise<{url: string, public_id: string}>}
- */
 export async function uploadToCloudinary(buffer, folder = "parking") {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
@@ -25,9 +19,6 @@ export async function uploadToCloudinary(buffer, folder = "parking") {
   });
 }
 
-/**
- * Delete an image from Cloudinary by public_id
- */
 export async function deleteFromCloudinary(publicId) {
   return cloudinary.uploader.destroy(publicId);
 }

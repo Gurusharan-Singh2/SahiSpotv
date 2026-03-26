@@ -2,7 +2,6 @@ import * as favoriteService from "../services/favorite.service.js";
 import { successResponse, errorResponse, paginatedResponse } from "../utils/response.js";
 import { parsePagination } from "../utils/validate.js";
 
-// ─── TOGGLE FAVORITE ──────────────────────────────────────────────────────────
 export async function toggleFavorite(req, res) {
   try {
     const result = await favoriteService.toggleFavorite(req.user.id, req.params.locationId);
@@ -12,7 +11,6 @@ export async function toggleFavorite(req, res) {
   }
 }
 
-// ─── GET MY FAVORITES ─────────────────────────────────────────────────────────
 export async function myFavorites(req, res) {
   try {
     const { page, limit } = parsePagination(req.query);

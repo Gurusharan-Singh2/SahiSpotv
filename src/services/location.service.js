@@ -2,9 +2,8 @@ import db from "../config/db.js";
 import { haversineDistance, getBoundingBox } from "../utils/haversine.js";
 import { withCache, cacheDel } from "../utils/cache.js";
 
-const NEARBY_TTL = 60; // seconds
+const NEARBY_TTL = 60;
 
-// ─── GET NEARBY LOCATIONS ─────────────────────────────────────────────────────
 export async function getNearbyLocations({ lat, lng, radius = 10, city, type, page = 1, limit = 20 }) {
   const cacheKey = `nearby:${lat}:${lng}:${radius}:${city || ""}:${type || ""}:${page}:${limit}`;
 
@@ -32,7 +31,6 @@ export async function getNearbyLocations({ lat, lng, radius = 10, city, type, pa
 
     const rows = await query;
 
-    // Haversine filter + sort
     const userLat = parseFloat(lat);
     const userLng = parseFloat(lng);
     const r = parseFloat(radius);
@@ -55,7 +53,6 @@ export async function getNearbyLocations({ lat, lng, radius = 10, city, type, pa
   }, NEARBY_TTL);
 }
 
-// ─── CREATE LOCATION ──────────────────────────────────────────────────────────
 export async function createLocation(ownerId, data) {
   const [id] = await db("parking_locations").insert({
     owner_id: ownerId,
@@ -70,7 +67,6 @@ export async function createLocation(ownerId, data) {
   return getLocationById(id);
 }
 
-// ─── UPDATE LOCATION ──────────────────────────────────────────────────────────
 export async function updateLocation(locationId, ownerId, data) {
   const allowed = ["name", "description", "address", "city", "state", "latitude", "longitude"];
   const updates = {};
@@ -84,12 +80,10 @@ export async function updateLocation(locationId, ownerId, data) {
   return getLocationById(locationId);
 }
 
-// ─── DELETE LOCATION ──────────────────────────────────────────────────────────
 export async function deleteLocation(locationId, ownerId) {
   return db("parking_locations").where({ id: locationId, owner_id: ownerId }).delete();
 }
 
-// ─── GET ALL LOCATIONS ────────────────────────────────────────────────────────
 export async function getAllLocations({ city, page = 1, limit = 20 }) {
   let query = db("parking_locations as pl")
     .select(
@@ -118,7 +112,6 @@ export async function getAllLocations({ city, page = 1, limit = 20 }) {
   return { locations: parsedRows, total };
 }
 
-// ─── GET SINGLE LOCATION ─────────────────────────────────────────────────────
 export async function getLocationById(id) {
   const location = await db("parking_locations as pl")
     .where("pl.id", id)

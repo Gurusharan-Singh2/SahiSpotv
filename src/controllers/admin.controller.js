@@ -2,7 +2,6 @@ import db from "../config/db.js";
 import bcrypt from "bcrypt";
 import { generateTokenAndSetCookie } from "../utils/generateToken.js";
 
-
 export const createAdmin = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -77,7 +76,6 @@ export const createAdminByAdmin = async (req, res) => {
   }
 };
 
-
 export const adminLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -124,13 +122,10 @@ export const adminLogin = async (req, res) => {
   }
 };
 
-
-
 export const adminLogout = async (req, res) => {
   res.clearCookie("token");
   res.status(200).json({ message: "Admin logged out successfully" });
 };
-
 
 export const getAllAdmins = async (req, res) => {
   try {
@@ -147,7 +142,6 @@ export const getAllAdmins = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
 
 export const deleteAdmin = async (req, res) => {
   try {
@@ -228,7 +222,7 @@ export const getAllUser = async (req, res) => {
 
 export const editAdmin = async (req, res) => {
   try {
-    // Only super admin can edit admins
+
     if (req.admin.role !== "super_admin") {
       return res.status(403).json({
         message: "Only super admin can edit admins",
@@ -244,14 +238,12 @@ export const editAdmin = async (req, res) => {
       return res.status(404).json({ message: "Admin not found" });
     }
 
-    // Prevent editing super_admin
     if (admin.role === "super_admin") {
       return res.status(403).json({
         message: "Super admin cannot be edited",
       });
     }
 
-    // Check if email already exists (if changing email)
     if (email && email !== admin.email) {
       const emailExists = await db("admins")
         .where({ email })
@@ -270,12 +262,10 @@ export const editAdmin = async (req, res) => {
     if (name) updateData.name = name;
     if (email) updateData.email = email;
 
-    // Optional password update
     if (password) {
       const hashedPassword = await bcrypt.hash(password, 10);
       updateData.password_hash = hashedPassword;
     }
-
 
     await db("admins").where({ id: adminId }).update(updateData);
 

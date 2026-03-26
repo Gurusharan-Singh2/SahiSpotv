@@ -1,10 +1,10 @@
 import db from "../config/db.js";
+import razorpayInstance from "../libs/razorpay.js";
+import crypto from "crypto";
 
-// ─── CREATE PAYMENT ───────────────────────────────────────────────────────────
-export async function createPayment(userId, data) {
-  const { booking_id, payment_method = "online", transaction_id = null } = data;
+export async function createRazorpayOrder(userId, data) {
+  const { booking_id } = data;
 
-  // Fetch booking in a transaction
   return db.transaction(async (trx) => {
     const booking = await trx("bookings").where({ id: booking_id }).first();
     if (!booking) throw { statusCode: 404, message: "Booking not found" };
@@ -17,46 +17,88 @@ export async function createPayment(userId, data) {
     const platform_fee = parseFloat(booking.commission);
     const owner_amount = parseFloat(booking.owner_earnings);
 
-    // Existing incomplete payment guard
-    const existingPending = await trx("payments")
+    let existingPending = await trx("payments")
       .where({ booking_id, payment_status: "pending" })
       .first();
+
+    let dbPaymentId;
+
     if (existingPending) {
-      throw { statusCode: 409, message: "A pending payment already exists for this booking" };
+      dbPaymentId = existingPending.id;
+    } else {
+      const [paymentId] = await trx("payments").insert({
+        booking_id,
+        user_id: userId,
+        amount,
+        platform_fee,
+        owner_amount,
+        payment_status: "pending",
+        payment_method: "razorpay",
+      });
+      dbPaymentId = paymentId;
     }
 
-    // Insert payment record
-    const [paymentId] = await trx("payments").insert({
-      booking_id,
-      user_id: userId,
-      amount,
-      platform_fee,
-      owner_amount,
-      payment_status: "paid",
-      payment_method,
-      transaction_id,
-    });
+    if (!razorpayInstance) {
+      throw { statusCode: 500, message: "Razorpay is not configured on the server" };
+    }
 
-    // Update booking status to completed
-    await trx("bookings").where({ id: booking_id }).update({ status: "completed" });
+    const orderOptions = {
+      amount: Math.round(amount * 100), // amount in paise
+      currency: "INR",
+      receipt: `receipt_booking_${booking_id}`,
+    };
 
-    // Insert into platform_earnings
-    await trx("platform_earnings").insert({
-      booking_id,
-      amount: platform_fee,
-    });
+    const razorpayOrder = await razorpayInstance.orders.create(orderOptions);
 
-    const payment = await trx("payments").where({ id: paymentId }).first();
-    return payment;
+    return {
+      orderId: razorpayOrder.id,
+      amount: razorpayOrder.amount,
+      currency: razorpayOrder.currency,
+      dbPaymentId
+    };
   });
 }
 
-// ─── GET PAYMENT BY BOOKING ───────────────────────────────────────────────────
+export async function verifyRazorpayPayment(userId, data) {
+  const { razorpay_order_id, razorpay_payment_id, razorpay_signature, booking_id } = data;
+
+  const generated_signature = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
+    .update(razorpay_order_id + "|" + razorpay_payment_id)
+    .digest('hex');
+
+  if (generated_signature !== razorpay_signature) {
+    throw { statusCode: 400, message: "Invalid payment signature" };
+  }
+
+  return db.transaction(async (trx) => {
+    const payment = await trx("payments")
+      .where({ booking_id, user_id: userId, payment_status: "pending" })
+      .first();
+      
+    if (!payment) {
+        throw { statusCode: 404, message: "Pending payment not found for this booking" };
+    }
+
+    await trx("payments").where({ id: payment.id }).update({
+      payment_status: "paid",
+      transaction_id: razorpay_payment_id
+    });
+
+    await trx("bookings").where({ id: booking_id }).update({ status: "completed" });
+
+    await trx("platform_earnings").insert({
+      booking_id,
+      amount: payment.platform_fee,
+    });
+
+    return await trx("payments").where({ id: payment.id }).first();
+  });
+}
+
 export async function getPaymentByBooking(bookingId) {
   return db("payments").where({ booking_id: bookingId }).first();
 }
 
-// ─── GET USER PAYMENTS ────────────────────────────────────────────────────────
 export async function getUserPayments(userId, { page = 1, limit = 20 } = {}) {
   const offset = (page - 1) * limit;
   const rows = await db("payments as p")

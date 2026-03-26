@@ -14,7 +14,6 @@ export async function getActiveSubscription(userId) {
     )
     .first();
 
-  // Check if subscription is expired
   if (subscription && subscription.end_date && new Date(subscription.end_date) < new Date()) {
     await db("user_subscriptions")
       .where({ user_subscription_id: subscription.subscriptionInstanceId })
@@ -24,7 +23,7 @@ export async function getActiveSubscription(userId) {
   }
 
   if (!subscription) {
-    // Fallback/Default to free plan
+
     const freePlan = await db("subscriptions")
       .where({ price: 0, isActive: 1 })
       .first();
