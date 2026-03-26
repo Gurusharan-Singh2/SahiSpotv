@@ -14,7 +14,7 @@ export const authMiddleware = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // ✅ Fetch full user (IMPORTANT)
+    
     const user = await db("users")
       .where({ id: decoded.id })
       .first(["id", "name", "email", "role"]);
@@ -25,7 +25,7 @@ export const authMiddleware = async (req, res, next) => {
       });
     }
 
-    req.user = user; // ✅ attach full user
+    req.user = user;
     next();
 
   } catch (error) {

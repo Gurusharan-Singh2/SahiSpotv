@@ -1,4 +1,4 @@
-import {generateEmailTemplate} from "./TemplateGenerator.js"
+import {generateEmailTemplate, generateForgotPasswordTemplate} from "./TemplateGenerator.js"
 
 import { sendEmail } from "./Email.js";
 
