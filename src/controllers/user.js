@@ -310,3 +310,74 @@ export const editProfile = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+// export const getUserProfile = async (req, res) => {
+
+
+//   try {
+//     const userId = req.user.id;
+
+    
+//     res.setHeader(
+//       "Cache-Control",
+//       "private, s-maxage=60, stale-while-revalidate=120"
+//     );
+
+//     const user = await db("users")
+//       .select("id", "name", "email", "image", "role")
+//       .where({ id: userId })
+//       .first();
+
+//     if (!user) {
+//       return res.status(404).json({ message: "User not found" });
+//     }
+
+//     res.status(200).json({
+//       message: "User profile fetched successfully",
+//       user,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// };
+
+export const getUserProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    await ensureRedisConnection();
+
+    const cacheKey = `user:${userId}`;
+
+   
+    const cachedUser = await redis.get(cacheKey);
+
+    if (cachedUser) {
+      return res.status(200).json({
+        message: "User profile fetched (cache)",
+        user: JSON.parse(cachedUser),
+      });
+    }
+
+    
+    const user = await db("users")
+      .select("id", "name", "email", "image", "role")
+      .where({ id: userId })
+      .first();
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    await redis.setex(cacheKey, 240, JSON.stringify(user));
+
+    res.status(200).json({
+      message: "User profile fetched (db)",
+      user,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};

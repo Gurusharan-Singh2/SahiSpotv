@@ -1,5 +1,5 @@
 import express from 'express'
-import { editProfile, forgotPasswordSendOtp,  loginWithPassword, registerUser, resendForgotPasswordOtp, resendSignupOtp, resetPassword, signupVerifyOtp, verifyForgotPasswordOtp } from '../controllers/user.js';
+import { editProfile, forgotPasswordSendOtp,  getUserProfile,  loginWithPassword, registerUser, resendForgotPasswordOtp, resendSignupOtp, resetPassword, signupVerifyOtp, verifyForgotPasswordOtp } from '../controllers/user.js';
 import { authMiddleware } from '../middleware/auth.middleware.js';
 import { upload } from '../middleware/upload.js';
 
@@ -16,7 +16,7 @@ router.post("/forgot-password", forgotPasswordSendOtp);
 router.post("/forgot-password/resend", resendForgotPasswordOtp);
 router.post("/forgot-password/verify-otp", verifyForgotPasswordOtp);
 router.post("/forgot-password/reset", resetPassword);
-// router.get("/profile",authMiddleware,getUserProfile);
+router.get("/profile",authMiddleware,getUserProfile);
 
 
 
