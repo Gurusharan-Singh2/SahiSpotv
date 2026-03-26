@@ -1,0 +1,18 @@
+import { Router } from "express";
+import { authMiddleware } from "../middleware/auth.middleware.js";
+import { allowRoles } from "../middleware/role.middleware.js";
+import * as locationController from "../controllers/location.controller.js";
+
+const router = Router();
+
+// Public
+router.get("/nearby", locationController.getNearby);
+router.get("/", locationController.getAll);
+router.get("/:id", locationController.getOne);
+
+// Owner only
+router.post("/", authMiddleware, allowRoles("owner", "admin", "super_admin"), locationController.create);
+router.put("/:id", authMiddleware, allowRoles("owner", "admin", "super_admin"), locationController.update);
+router.delete("/:id", authMiddleware, allowRoles("owner", "admin", "super_admin"), locationController.remove);
+
+export default router;
