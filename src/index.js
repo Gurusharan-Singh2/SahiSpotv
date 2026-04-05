@@ -19,8 +19,17 @@ app.disable("x-powered-by");
 const morganFormat = process.env.NODE_ENV === "production" ? "combined" : "dev";
 app.use(morgan(morganFormat));
 
+const allowedOrigins = ["http://localhost:5173", "https://yourapp.com"];
+
 app.use(
   cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
@@ -71,7 +80,7 @@ app.use((err, req, res, next) => {
   res.status(status).json({ message });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server Started on ${PORT}`);
-});
+// app.listen(PORT, () => {
+//   console.log(`Server Started on ${PORT}`);
+// });
 
