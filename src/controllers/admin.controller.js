@@ -279,6 +279,38 @@ export const editAdmin = async (req, res) => {
   }
 };
 
+export const getPendingParkingLocations = async (req, res) => {
+  try {
+    const pendingLocations = await db("parking_locations as pl")
+      .leftJoin("users as u", "u.id", "pl.owner_id")
+      .select(
+        "pl.id",
+        "pl.name",
+        "pl.description",
+        "pl.address",
+        "pl.city",
+        "pl.state",
+        "pl.latitude",
+        "pl.longitude",
+        "pl.status",
+        "pl.created_at",
+        "pl.owner_id",
+        "u.name as owner_name",
+        "u.email as owner_email"
+      )
+      .where("pl.status", "pending")
+      .orderBy("pl.created_at", "desc");
+
+    res.status(200).json({
+      success: true,
+      parkingLocations: pendingLocations,
+    });
+  } catch (error) {
+    console.error("Get pending parking locations error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 export const approveParking = async (req, res) => {
   try {
     const { locationId } = req.params;

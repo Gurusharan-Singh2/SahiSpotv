@@ -185,3 +185,49 @@ export async function getLocationById(id) {
   const images = await db("parking_images").where({ location_id: id }).select("id", "image_url");
   return { ...location, images };
 }
+
+
+
+export async function getLocationsByOwner(ownerId, { page = 1, limit = 20 }) {
+  const offset = (page - 1) * limit;
+
+  const query = db("parking_locations as pl")
+    .where("pl.owner_id", ownerId)
+    .select(
+      "pl.*",
+      db.raw("AVG(r.rating) as avg_rating"),
+      db.raw(`
+        JSON_ARRAYAGG(
+          JSON_OBJECT(
+            'id', pst.id,
+            'vehicle_type', pst.vehicle_type,
+            'available_slots', pst.available_slots,
+            'price_per_hour', pst.price_per_hour,
+            'price_per_day', pst.price_per_day,
+            'price_per_month', pst.price_per_month
+          )
+        ) as slot_types
+      `),
+      db.raw("GROUP_CONCAT(DISTINCT pi.image_url) as images")
+    )
+    .leftJoin("reviews as r", "r.location_id", "pl.id")
+    .leftJoin("parking_slot_types as pst", "pst.location_id", "pl.id")
+    .leftJoin("parking_images as pi", "pi.location_id", "pl.id")
+    .groupBy("pl.id");
+
+  const [{ total }] = await db("parking_locations")
+    .where("owner_id", ownerId)
+    .count("id as total");
+
+  const rows = await query.limit(limit).offset(offset);
+
+  const parsed = rows.map((loc) => ({
+    ...loc,
+    images: loc.images ? loc.images.split(",") : [],
+    avg_rating: loc.avg_rating
+      ? parseFloat(Number(loc.avg_rating).toFixed(2))
+      : null,
+  }));
+
+  return { locations: parsed, total };
+}

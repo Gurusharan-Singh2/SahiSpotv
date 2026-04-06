@@ -5,14 +5,38 @@
     "description": "Complete Postman collection for SahiSpot Parking Management SaaS backend. All parking routes are under /api/v1/parking."
   },
   "variable": [
-    { "key": "baseUrl",     "value": "http://localhost:8082" },
-    { "key": "locationId",  "value": "1" },
-    { "key": "slotId",      "value": "1" },
-    { "key": "bookingId",   "value": "1" },
-    { "key": "paymentId",   "value": "1" },
-    { "key": "reviewId",    "value": "1" },
-    { "key": "imageId",     "value": "1" },
-    { "key": "adminId",     "value": "1" }
+    {
+      "key": "baseUrl",
+      "value": "https://sahi-spotv.vercel.app"
+    },
+    {
+      "key": "locationId",
+      "value": "1"
+    },
+    {
+      "key": "slotId",
+      "value": "1"
+    },
+    {
+      "key": "bookingId",
+      "value": "1"
+    },
+    {
+      "key": "paymentId",
+      "value": "1"
+    },
+    {
+      "key": "reviewId",
+      "value": "1"
+    },
+    {
+      "key": "imageId",
+      "value": "1"
+    },
+    {
+      "key": "adminId",
+      "value": "1"
+    }
   ],
   "item": [
     {
@@ -20,11 +44,19 @@
       "item": [
         {
           "name": "Health Check",
-          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/health" }
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/health"
+          }
         },
         {
           "name": "Root",
-          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/" }
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/"
+          }
         }
       ]
     },
@@ -35,7 +67,12 @@
           "name": "Signup — Send OTP",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"StrongPass123\"\n}"
@@ -47,7 +84,12 @@
           "name": "Signup — Verify OTP",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"StrongPass123\",\n  \"otp\": \"123456\"\n}"
@@ -59,7 +101,12 @@
           "name": "Resend OTP",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\"\n}"
@@ -71,7 +118,12 @@
           "name": "Login",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"StrongPass123\"\n}"
@@ -81,7 +133,11 @@
         },
         {
           "name": "Logout",
-          "request": { "method": "POST", "header": [], "url": "{{baseUrl}}/api/v1/logout" }
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/logout"
+          }
         }
       ]
     },
@@ -92,8 +148,16 @@
           "name": "Send OTP",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\n  \"email\": \"john@example.com\"\n}" },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\"\n}"
+            },
             "url": "{{baseUrl}}/api/v1/forgot-password"
           }
         },
@@ -101,8 +165,16 @@
           "name": "Resend OTP",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\n  \"email\": \"john@example.com\"\n}" },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\"\n}"
+            },
             "url": "{{baseUrl}}/api/v1/forgot-password/resend"
           }
         },
@@ -110,8 +182,16 @@
           "name": "Verify OTP",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\n  \"email\": \"john@example.com\",\n  \"otp\": \"123456\"\n}" },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"otp\": \"123456\"\n}"
+            },
             "url": "{{baseUrl}}/api/v1/forgot-password/verify-otp"
           }
         },
@@ -119,8 +199,16 @@
           "name": "Reset Password",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\n  \"email\": \"john@example.com\",\n  \"newPassword\": \"NewStrongPass123\"\n}" },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"newPassword\": \"NewStrongPass123\"\n}"
+            },
             "url": "{{baseUrl}}/api/v1/forgot-password/reset"
           }
         }
@@ -131,7 +219,11 @@
       "item": [
         {
           "name": "Get Profile",
-          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/v1/profile" }
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/profile"
+          }
         },
         {
           "name": "Edit Profile",
@@ -141,8 +233,16 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "name", "value": "John Doe", "type": "text" },
-                { "key": "img", "type": "file", "src": "" }
+                {
+                  "key": "name",
+                  "value": "John Doe",
+                  "type": "text"
+                },
+                {
+                  "key": "img",
+                  "type": "file",
+                  "src": ""
+                }
               ]
             },
             "url": "{{baseUrl}}/api/v1/profile/edit"
@@ -157,43 +257,91 @@
           "name": "Admin Login",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"AdminPass123\"\n}" },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"AdminPass123\"\n}"
+            },
             "url": "{{baseUrl}}/api/v1/admin/login"
           }
         },
         {
           "name": "Admin Logout",
-          "request": { "method": "POST", "header": [], "url": "{{baseUrl}}/api/v1/admin/logout" }
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/admin/logout"
+          }
         },
         {
           "name": "Create Admin (Super Admin)",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Admin 2\",\n  \"email\": \"admin2@example.com\",\n  \"password\": \"AdminPass456\"\n}" },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Admin 2\",\n  \"email\": \"admin2@example.com\",\n  \"password\": \"AdminPass456\"\n}"
+            },
             "url": "{{baseUrl}}/api/v1/admin/create"
           }
         },
         {
           "name": "List Admins",
-          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/v1/admin/list" }
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/admin/list"
+          }
         },
         {
           "name": "All Users",
-          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/v1/admin/allUser" }
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/admin/allUser"
+          }
+        },
+        {
+          "name": "Pending Parking Locations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/admin/parking/pending"
+          }
         },
         {
           "name": "Delete Admin",
-          "request": { "method": "DELETE", "header": [], "url": "{{baseUrl}}/api/v1/admin/{{adminId}}" }
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/admin/{{adminId}}"
+          }
         },
         {
           "name": "Approve Parking",
-          "request": { "method": "PATCH", "header": [], "url": "{{baseUrl}}/api/v1/admin/parking/{{locationId}}/approve" }
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/admin/parking/{{locationId}}/approve"
+          }
         },
         {
           "name": "Reject Parking",
-          "request": { "method": "PATCH", "header": [], "url": "{{baseUrl}}/api/v1/admin/parking/{{locationId}}/reject" }
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/admin/parking/{{locationId}}/reject"
+          }
         }
       ]
     },
@@ -207,16 +355,47 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/parking/locations/nearby?lat=28.6139&lng=77.2090&radius=10&page=1&limit=20",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "parking", "locations", "nearby"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "parking",
+                "locations",
+                "nearby"
+              ],
               "query": [
-                { "key": "lat", "value": "28.6139" },
-                { "key": "lng", "value": "77.2090" },
-                { "key": "radius", "value": "10" },
-                { "key": "city", "value": "", "disabled": true },
-                { "key": "type", "value": "car", "disabled": true },
-                { "key": "page", "value": "1" },
-                { "key": "limit", "value": "20" }
+                {
+                  "key": "lat",
+                  "value": "28.6139"
+                },
+                {
+                  "key": "lng",
+                  "value": "77.2090"
+                },
+                {
+                  "key": "radius",
+                  "value": "10"
+                },
+                {
+                  "key": "city",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "type",
+                  "value": "car",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
               ]
             }
           }
@@ -228,14 +407,39 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/parking/locations?page=1&limit=20",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "parking", "locations"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "parking",
+                "locations"
+              ],
               "query": [
-                { "key": "city", "value": "Delhi", "disabled": true },
-                { "key": "page", "value": "1" },
-                { "key": "limit", "value": "20" }
+                {
+                  "key": "city",
+                  "value": "Delhi",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
               ]
             }
+          }
+        },
+        {
+          "name": "Get My Locations [owner]",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/parking/locations/my"
           }
         },
         {
@@ -250,7 +454,12 @@
           "name": "Create Location  [owner]",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"SahiSpot Parking Hub\",\n  \"description\": \"Secure underground parking\",\n  \"address\": \"12 Main Street, Connaught Place\",\n  \"city\": \"New Delhi\",\n  \"state\": \"Delhi\",\n  \"latitude\": 28.6315,\n  \"longitude\": 77.2167,\n  \"slot_types\": [\n    {\n      \"vehicle_type\": \"car\",\n      \"total_slots\": 50,\n      \"price_per_hour\": 50,\n      \"price_per_day\": 400,\n      \"price_per_month\": 5000\n    }\n  ]\n}"
@@ -262,7 +471,12 @@
           "name": "Update Location  [owner]",
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"SahiSpot Parking Hub (Updated)\",\n  \"description\": \"Renovated secure parking\"\n}"
@@ -290,10 +504,23 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/parking/locations/{{locationId}}/slots",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "parking", "locations", "{{locationId}}", "slots"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "parking",
+                "locations",
+                "{{locationId}}",
+                "slots"
+              ],
               "query": [
-                { "key": "type", "value": "car", "disabled": true }
+                {
+                  "key": "type",
+                  "value": "car",
+                  "disabled": true
+                }
               ]
             }
           }
@@ -302,7 +529,12 @@
           "name": "Create Single Slot  [owner]",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"slot_number\": \"A-01\",\n  \"type\": \"car\"\n}"
@@ -314,7 +546,12 @@
           "name": "Create Bulk Slots  [owner]",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"slots\": [\n    { \"slot_number\": \"A-01\", \"type\": \"car\" },\n    { \"slot_number\": \"A-02\", \"type\": \"car\" },\n    { \"slot_number\": \"B-01\", \"type\": \"bike\" },\n    { \"slot_number\": \"E-01\", \"type\": \"ev\" }\n  ]\n}"
@@ -326,7 +563,12 @@
           "name": "Update Slot  [owner]",
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"type\": \"ev\",\n  \"is_available\": 1\n}"
@@ -351,7 +593,12 @@
           "name": "Create Booking  [user]",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"location_id\": 1,\n  \"slot_type_id\": 1,\n  \"duration_type\": \"hour\",\n  \"total_hours\": 3,\n  \"start_time\": \"2026-03-27T10:00:00\",\n  \"end_time\": \"2026-03-27T13:00:00\"\n}"
@@ -366,11 +613,25 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/parking/bookings/my?page=1&limit=10",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "parking", "bookings", "my"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "parking",
+                "bookings",
+                "my"
+              ],
               "query": [
-                { "key": "page", "value": "1" },
-                { "key": "limit", "value": "10" }
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
               ]
             }
           }
@@ -408,7 +669,12 @@
           "name": "Create Order",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"booking_id\": 1\n}"
@@ -420,7 +686,12 @@
           "name": "Verify Payment",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"booking_id\": 1,\n  \"razorpay_order_id\": \"order_...\",\n  \"razorpay_payment_id\": \"pay_...\",\n  \"razorpay_signature\": \"...\"\n}"
@@ -435,11 +706,25 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/parking/payments/my?page=1&limit=10",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "parking", "payments", "my"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "parking",
+                "payments",
+                "my"
+              ],
               "query": [
-                { "key": "page", "value": "1" },
-                { "key": "limit", "value": "10" }
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
               ]
             }
           }
@@ -464,11 +749,26 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/parking/locations/{{locationId}}/reviews?page=1&limit=10",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "parking", "locations", "{{locationId}}", "reviews"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "parking",
+                "locations",
+                "{{locationId}}",
+                "reviews"
+              ],
               "query": [
-                { "key": "page", "value": "1" },
-                { "key": "limit", "value": "10" }
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
               ]
             }
           }
@@ -477,7 +777,12 @@
           "name": "Add Review  [auth]",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"rating\": 5,\n  \"comment\": \"Excellent parking facility, very safe and clean!\"\n}"
@@ -505,11 +810,24 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/parking/favorites?page=1&limit=10",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "parking", "favorites"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "parking",
+                "favorites"
+              ],
               "query": [
-                { "key": "page", "value": "1" },
-                { "key": "limit", "value": "10" }
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
               ]
             }
           }
@@ -543,7 +861,11 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "image", "type": "file", "src": "" }
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": ""
+                }
               ]
             },
             "url": "{{baseUrl}}/api/v1/parking/locations/{{locationId}}/images"
@@ -566,7 +888,12 @@
           "name": "Contact Us",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"message\": \"I need help with my booking.\"\n}"

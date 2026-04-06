@@ -6,6 +6,12 @@ import * as locationController from "../controllers/location.controller.js";
 const router = Router();
 
 router.get("/nearby", locationController.getNearby);
+router.get(
+  "/my",
+  authMiddleware,
+  allowRoles("owner", "admin", "super_admin"),
+  locationController.getMyLocations
+);
 router.get("/", locationController.getAll);
 router.get("/:id", locationController.getOne);
 

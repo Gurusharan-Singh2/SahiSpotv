@@ -88,3 +88,30 @@ export async function remove(req, res) {
     return errorResponse(res, err.message || "Server error", err?.statusCode || 500);
   }
 }
+
+export async function getMyLocations(req, res) {
+  try {
+    const { page, limit } = parsePagination(req.query);
+
+    const { locations, total } =
+      await locationService.getLocationsByOwner(req.user.id, {
+        page,
+        limit,
+      });
+
+    return paginatedResponse(
+      res,
+      locations,
+      total,
+      page,
+      limit,
+      "Owner locations"
+    );
+  } catch (err) {
+    return errorResponse(
+      res,
+      err.message || "Server error",
+      err?.statusCode || 500
+    );
+  }
+}
