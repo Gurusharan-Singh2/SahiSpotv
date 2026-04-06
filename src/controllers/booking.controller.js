@@ -4,8 +4,13 @@ import { requireFields, parsePagination } from "../utils/validate.js";
 
 export async function createBooking(req, res) {
   try {
-    const missing = requireFields(req.body, ["slot_id", "location_id", "start_time", "end_time"]);
+    const missing = requireFields(req.body, ["location_id", "slot_type_id", "start_time", "end_time", "duration_type", "total_hours"]);
     if (missing.length) return errorResponse(res, `Missing fields: ${missing.join(", ")}`, 400);
+
+    const validDurations = ["hour", "day", "month"];
+    if (!validDurations.includes(req.body.duration_type)) {
+      return errorResponse(res, "duration_type must be hour, day, or month", 400);
+    }
 
     const booking = await bookingService.createBooking(req.user.id, req.body);
     return successResponse(res, booking, "Booking created", 201);

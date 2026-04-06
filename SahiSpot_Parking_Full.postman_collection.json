@@ -186,6 +186,14 @@
         {
           "name": "Delete Admin",
           "request": { "method": "DELETE", "header": [], "url": "{{baseUrl}}/api/v1/admin/{{adminId}}" }
+        },
+        {
+          "name": "Approve Parking",
+          "request": { "method": "PATCH", "header": [], "url": "{{baseUrl}}/api/v1/admin/parking/{{locationId}}/approve" }
+        },
+        {
+          "name": "Reject Parking",
+          "request": { "method": "PATCH", "header": [], "url": "{{baseUrl}}/api/v1/admin/parking/{{locationId}}/reject" }
         }
       ]
     },
@@ -245,7 +253,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"SahiSpot Parking Hub\",\n  \"description\": \"Secure underground parking\",\n  \"address\": \"12 Main Street, Connaught Place\",\n  \"city\": \"New Delhi\",\n  \"state\": \"Delhi\",\n  \"latitude\": 28.6315,\n  \"longitude\": 77.2167\n}"
+              "raw": "{\n  \"name\": \"SahiSpot Parking Hub\",\n  \"description\": \"Secure underground parking\",\n  \"address\": \"12 Main Street, Connaught Place\",\n  \"city\": \"New Delhi\",\n  \"state\": \"Delhi\",\n  \"latitude\": 28.6315,\n  \"longitude\": 77.2167,\n  \"slot_types\": [\n    {\n      \"vehicle_type\": \"car\",\n      \"total_slots\": 50,\n      \"price_per_hour\": 50,\n      \"price_per_day\": 400,\n      \"price_per_month\": 5000\n    }\n  ]\n}"
             },
             "url": "{{baseUrl}}/api/v1/parking/locations"
           }
@@ -346,7 +354,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"slot_id\": 1,\n  \"location_id\": 1,\n  \"start_time\": \"2026-03-27T10:00:00\",\n  \"end_time\": \"2026-03-27T13:00:00\",\n  \"price_per_hour\": 50\n}"
+              "raw": "{\n  \"location_id\": 1,\n  \"slot_type_id\": 1,\n  \"duration_type\": \"hour\",\n  \"total_hours\": 3,\n  \"start_time\": \"2026-03-27T10:00:00\",\n  \"end_time\": \"2026-03-27T13:00:00\"\n}"
             },
             "url": "{{baseUrl}}/api/v1/parking/bookings"
           }

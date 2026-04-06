@@ -27,51 +27,76 @@ function calcPricing(pricePerHour, startTime, endTime) {
 }
 
 export async function createBooking(userId, data) {
-  const { slot_id, location_id, start_time, end_time, price_per_hour = 50 } = data;
+  const { location_id, slot_type_id, start_time, end_time, duration_type, total_hours } = data;
 
-  const slot = await db("parking_slots").where({ id: slot_id }).first();
-  if (!slot) throw { statusCode: 404, message: "Slot not found" };
+  return await db.transaction(async (trx) => {
+    // 1. Fetch available_slots using `.forUpdate()` to enforce row-level safety during concurrency 
+    const slotType = await trx("parking_slot_types")
+      .where({ id: slot_type_id, location_id })
+      .first()
+      .forUpdate(); 
 
-  if (slot.location_id !== parseInt(location_id)) {
-    throw { statusCode: 400, message: "Slot does not belong to the specified location" };
-  }
+    if (!slotType) throw { statusCode: 404, message: "Slot type not found for this location" };
+    if (slotType.available_slots <= 0) throw { statusCode: 400, message: "No available slots for this vehicle type" };
 
-  const start = new Date(start_time);
-  const end = new Date(end_time);
-  if (isNaN(start) || isNaN(end)) throw { statusCode: 400, message: "Invalid date format" };
-  if (end <= start) throw { statusCode: 400, message: "end_time must be after start_time" };
+    // 2. Dynamic Pricing calculation
+    let total_price = 0;
+    if (duration_type === "hour") total_price = slotType.price_per_hour * total_hours;
+    else if (duration_type === "day") total_price = slotType.price_per_day;
+    else if (duration_type === "month") total_price = slotType.price_per_month;
+    
+    const platform_fee = parseFloat((total_price * 0.10).toFixed(2));
+    const owner_earnings = parseFloat((total_price - platform_fee).toFixed(2));
 
-  const conflict = await hasOverlappingBooking(slot_id, start_time, end_time);
-  if (conflict) throw { statusCode: 409, message: "Slot is already booked for this time period" };
+    // 3. Insert specific booking instance
+    const [bookingId] = await trx("bookings").insert({
+      user_id: userId,
+      location_id,
+      slot_type_id,
+      vehicle_type: slotType.vehicle_type, 
+      duration_type,
+      total_hours,
+      start_time,
+      end_time,
+      total_price,
+      platform_fee,       
+      owner_earnings,
+      payment_status: "pending", 
+      status: "booked"
+    });
 
-  const { total_price, commission, owner_earnings } = calcPricing(price_per_hour, start_time, end_time);
+    // 4. Decrease available slots securely
+    await trx("parking_slot_types")
+      .where({ id: slot_type_id })
+      .decrement("available_slots", 1);
 
-  const [id] = await db("bookings").insert({
-    user_id: userId,
-    location_id,
-    slot_id,
-    start_time,
-    end_time,
-    total_price,
-    commission,
-    owner_earnings,
-    status: "booked",
+    return trx("bookings").where({ id: bookingId }).first();
   });
-
-  return db("bookings").where({ id }).first();
 }
 
 export async function cancelBooking(bookingId, userId) {
-  const booking = await db("bookings").where({ id: bookingId }).first();
-  if (!booking) throw { statusCode: 404, message: "Booking not found" };
+  return await db.transaction(async (trx) => {
+    // Lock booking execution to prevent double cancelling
+    const booking = await trx("bookings").where({ id: bookingId }).first().forUpdate();
+    
+    if (!booking) throw { statusCode: 404, message: "Booking not found" };
+    if (booking.user_id !== userId) throw { statusCode: 403, message: "Forbidden" };
+    
+    // Idempotency check 
+    if (booking.status !== "booked") {
+      throw { statusCode: 400, message: `Cannot cancel a booking with status '${booking.status}'` };
+    }
 
-  if (booking.user_id !== userId) throw { statusCode: 403, message: "Forbidden" };
-  if (booking.status !== "booked") {
-    throw { statusCode: 400, message: `Cannot cancel a booking with status '${booking.status}'` };
-  }
+    // 1. Update Booking state
+    await trx("bookings").where({ id: bookingId }).update({ status: "cancelled" });
 
-  await db("bookings").where({ id: bookingId }).update({ status: "cancelled" });
-  return db("bookings").where({ id: bookingId }).first();
+    // 2. Safely increase available slots for that type
+    await trx("parking_slot_types")
+      .where({ id: booking.slot_type_id })
+      .increment("available_slots", 1);
+
+    return trx("bookings").where({ id: bookingId }).first();
+  });
 }
 
 export async function completeBooking(bookingId) {
@@ -90,8 +115,16 @@ export async function getUserBookings(userId, { page = 1, limit = 20 } = {}) {
   const rows = await db("bookings as b")
     .where("b.user_id", userId)
     .join("parking_locations as pl", "pl.id", "b.location_id")
-    .join("parking_slots as ps", "ps.id", "b.slot_id")
-    .select("b.*", "pl.name as location_name", "pl.address", "ps.slot_number", "ps.type as slot_type")
+    .join("parking_slot_types as pst", "pst.id", "b.slot_type_id")
+    .select(
+      "b.*", 
+      "pl.name as location_name", 
+      "pl.address", 
+      "pst.vehicle_type", 
+      "pst.price_per_hour",
+      "pst.price_per_day",
+      "pst.price_per_month"
+    )
     .orderBy("b.created_at", "desc")
     .limit(limit)
     .offset(offset);
@@ -104,7 +137,12 @@ export async function getBookingById(bookingId) {
   return db("bookings as b")
     .where("b.id", bookingId)
     .join("parking_locations as pl", "pl.id", "b.location_id")
-    .join("parking_slots as ps", "ps.id", "b.slot_id")
-    .select("b.*", "pl.name as location_name", "pl.address", "ps.slot_number", "ps.type as slot_type")
+    .join("parking_slot_types as pst", "pst.id", "b.slot_type_id")
+    .select(
+      "b.*", 
+      "pl.name as location_name", 
+      "pl.address", 
+      "pst.vehicle_type"
+    )
     .first();
 }

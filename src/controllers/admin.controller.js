@@ -278,3 +278,50 @@ export const editAdmin = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export const approveParking = async (req, res) => {
+  try {
+    const { locationId } = req.params;
+    
+    // Ensure only admin can access (assuming auth middleware populates req.admin)
+    if (!req.admin || !req.admin.id) {
+           return res.status(403).json({ message: "Forbidden" });
+    }
+
+    const updated = await db("parking_locations")
+      .where({ id: locationId })
+      .update({
+        status: "approved",
+        approved_by: req.admin.id,
+        approved_at: db.fn.now()
+      });
+
+    if (!updated) return res.status(404).json({ message: "Parking location not found" });
+
+    res.status(200).json({ success: true, message: "Parking approved successfully" });
+  } catch (error) {
+    console.error("Approve parking error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const rejectParking = async (req, res) => {
+  try {
+    const { locationId } = req.params;
+    
+    if (!req.admin || !req.admin.id) {
+           return res.status(403).json({ message: "Forbidden" });
+    }
+
+    const updated = await db("parking_locations")
+      .where({ id: locationId })
+      .update({ status: "rejected" });
+
+    if (!updated) return res.status(404).json({ message: "Parking location not found" });
+
+    res.status(200).json({ success: true, message: "Parking rejected successfully" });
+  } catch (error) {
+    console.error("Reject parking error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};

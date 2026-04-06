@@ -11,22 +11,35 @@ export async function getNearbyLocations({ lat, lng, radius = 10, city, type, pa
     const box = getBoundingBox(parseFloat(lat), parseFloat(lng), parseFloat(radius));
 
     let query = db("parking_locations as pl")
+      .where("pl.status", "approved")
+      .where("pl.is_active", 1)
       .whereBetween("pl.latitude", [box.minLat, box.maxLat])
       .whereBetween("pl.longitude", [box.minLng, box.maxLng])
       .select(
         "pl.*",
         db.raw("AVG(r.rating) as avg_rating"),
-        db.raw("COUNT(DISTINCT ps.id) as total_slots"),
+        db.raw(`
+          JSON_ARRAYAGG(
+            JSON_OBJECT(
+              'id', pst.id,
+              'vehicle_type', pst.vehicle_type,
+              'available_slots', pst.available_slots,
+              'price_per_hour', pst.price_per_hour,
+              'price_per_day', pst.price_per_day,
+              'price_per_month', pst.price_per_month
+            )
+          ) as slot_types
+        `),
         db.raw("GROUP_CONCAT(DISTINCT pi.image_url) as images")
       )
       .leftJoin("reviews as r", "r.location_id", "pl.id")
-      .leftJoin("parking_slots as ps", "ps.location_id", "pl.id")
+      .leftJoin("parking_slot_types as pst", "pst.location_id", "pl.id")
       .leftJoin("parking_images as pi", "pi.location_id", "pl.id")
       .groupBy("pl.id");
 
     if (city) query = query.where("pl.city", "like", `%${city}%`);
     if (type) query = query.whereExists(
-      db("parking_slots").where("location_id", db.ref("pl.id")).where("type", type).limit(1)
+      db("parking_slot_types").where("location_id", db.ref("pl.id")).where("vehicle_type", type).limit(1)
     );
 
     const rows = await query;
@@ -54,17 +67,35 @@ export async function getNearbyLocations({ lat, lng, radius = 10, city, type, pa
 }
 
 export async function createLocation(ownerId, data) {
-  const [id] = await db("parking_locations").insert({
-    owner_id: ownerId,
-    name: data.name,
-    description: data.description || null,
-    address: data.address,
-    city: data.city,
-    state: data.state,
-    latitude: parseFloat(data.latitude),
-    longitude: parseFloat(data.longitude),
-  });
-  return getLocationById(id);
+  return await db.transaction(async (trx) => {
+    // 1. Insert into parking_locations with "pending" status
+    const [id] = await trx("parking_locations").insert({
+      owner_id: ownerId,
+      name: data.name,
+      description: data.description || null,
+      address: data.address,
+      city: data.city,
+      state: data.state,
+      latitude: parseFloat(data.latitude),
+      longitude: parseFloat(data.longitude),
+      status: "pending", 
+    });
+
+    // 2. Insert multiple rows into parking_slot_types
+    const slotTypesData = data.slot_types.map((slot) => ({
+      location_id: id,
+      vehicle_type: slot.vehicle_type,
+      total_slots: slot.total_slots,
+      available_slots: slot.total_slots,
+      price_per_hour: slot.price_per_hour || 0,
+      price_per_day: slot.price_per_day || 0,
+      price_per_month: slot.price_per_month || 0,
+    }));
+    
+    await trx("parking_slot_types").insert(slotTypesData);
+
+    return id;
+  }).then(id => getLocationById(id));
 }
 
 export async function updateLocation(locationId, ownerId, data) {
@@ -86,14 +117,27 @@ export async function deleteLocation(locationId, ownerId) {
 
 export async function getAllLocations({ city, page = 1, limit = 20 }) {
   let query = db("parking_locations as pl")
+    .where("pl.status", "approved")
+    .where("pl.is_active", 1)
     .select(
       "pl.*",
       db.raw("AVG(r.rating) as avg_rating"),
-      db.raw("COUNT(DISTINCT ps.id) as total_slots"),
+      db.raw(`
+        JSON_ARRAYAGG(
+          JSON_OBJECT(
+            'id', pst.id,
+            'vehicle_type', pst.vehicle_type,
+            'available_slots', pst.available_slots,
+            'price_per_hour', pst.price_per_hour,
+            'price_per_day', pst.price_per_day,
+            'price_per_month', pst.price_per_month
+          )
+        ) as slot_types
+      `),
       db.raw("GROUP_CONCAT(DISTINCT pi.image_url) as images")
     )
     .leftJoin("reviews as r", "r.location_id", "pl.id")
-    .leftJoin("parking_slots as ps", "ps.location_id", "pl.id")
+    .leftJoin("parking_slot_types as pst", "pst.location_id", "pl.id")
     .leftJoin("parking_images as pi", "pi.location_id", "pl.id")
     .groupBy("pl.id");
 
@@ -118,10 +162,21 @@ export async function getLocationById(id) {
     .select(
       "pl.*",
       db.raw("AVG(r.rating) as avg_rating"),
-      db.raw("COUNT(DISTINCT ps.id) as total_slots")
+      db.raw(`
+        JSON_ARRAYAGG(
+          JSON_OBJECT(
+            'id', pst.id,
+            'vehicle_type', pst.vehicle_type,
+            'available_slots', pst.available_slots,
+            'price_per_hour', pst.price_per_hour,
+            'price_per_day', pst.price_per_day,
+            'price_per_month', pst.price_per_month
+          )
+        ) as slot_types
+      `)
     )
     .leftJoin("reviews as r", "r.location_id", "pl.id")
-    .leftJoin("parking_slots as ps", "ps.location_id", "pl.id")
+    .leftJoin("parking_slot_types as pst", "pst.location_id", "pl.id")
     .groupBy("pl.id")
     .first();
 
