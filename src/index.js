@@ -80,7 +80,7 @@ app.use((err, req, res, next) => {
   res.status(status).json({ message });
 });
 
-// app.listen(PORT, () => {
-//   console.log(`Server Started on ${PORT}`);
-// });
+app.listen(PORT, () => {
+  console.log(`Server Started on ${PORT}`);
+});
 

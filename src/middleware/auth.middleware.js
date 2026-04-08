@@ -47,7 +47,7 @@ export const adminAuth = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    const admin = await db("admins")
+    const admin = await db("users")
       .where({ id: decoded.id })
       .first(["id", "name", "email", "role"]);
 
@@ -73,7 +73,7 @@ export const superAdminAuth = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    const admin = await db("admins")
+    const admin = await db("users")
       .where({ id: decoded.id })
       .first(["id", "name", "email", "role"]);
 
