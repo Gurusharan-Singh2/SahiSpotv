@@ -283,7 +283,7 @@ export async function getLocationsByOwner(ownerId, { page = 1, limit = 20 }) {
               'price_per_hour', pst.price_per_hour,
               'price_per_day', pst.price_per_day,
               'price_per_month', pst.price_per_month,
-              'status',pst.status
+              
             )
           )
           FROM parking_slot_types pst
