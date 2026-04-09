@@ -261,6 +261,88 @@ export async function getLocationById(id) {
   };
 }
 
+// ================== SEARCH BY CITY / NAME ==================
+export async function searchLocations({ query, city, page = 1, limit = 20 }) {
+  let dbQuery = db("parking_locations as pl")
+    .where("pl.status", "approved")
+    .where("pl.is_active", 1)
+    .select(
+      "pl.*",
+
+      db.raw("(SELECT AVG(r.rating) FROM reviews r WHERE r.location_id = pl.id) as avg_rating"),
+
+      db.raw(`
+        (
+          SELECT JSON_ARRAYAGG(
+            JSON_OBJECT(
+              'id', pst.id,
+              'vehicle_type', pst.vehicle_type,
+              'total_slots', pst.total_slots,
+              'available_slots', pst.available_slots,
+              'price_per_hour', pst.price_per_hour,
+              'price_per_day', pst.price_per_day,
+              'price_per_month', pst.price_per_month
+            )
+          )
+          FROM parking_slot_types pst
+          WHERE pst.location_id = pl.id
+        ) as slot_types
+      `),
+
+      db.raw(`
+        (
+          SELECT GROUP_CONCAT(DISTINCT pi.image_url)
+          FROM parking_images pi
+          WHERE pi.location_id = pl.id
+        ) as images
+      `)
+    );
+
+  if (query) {
+    dbQuery = dbQuery.where(function () {
+      this.where("pl.name", "like", `%${query}%`)
+        .orWhere("pl.city", "like", `%${query}%`)
+        .orWhere("pl.address", "like", `%${query}%`);
+    });
+  }
+
+  if (city) {
+    dbQuery = dbQuery.where("pl.city", "like", `%${city}%`);
+  }
+
+  const countQuery = db("parking_locations as pl")
+    .where("pl.status", "approved")
+    .where("pl.is_active", 1);
+
+  if (query) {
+    countQuery.where(function () {
+      this.where("pl.name", "like", `%${query}%`)
+        .orWhere("pl.city", "like", `%${query}%`)
+        .orWhere("pl.address", "like", `%${query}%`);
+    });
+  }
+
+  if (city) {
+    countQuery.where("pl.city", "like", `%${city}%`);
+  }
+
+  const [{ total }] = await countQuery.count("pl.id as total");
+
+  const offset = (page - 1) * limit;
+  const rows = await dbQuery.limit(limit).offset(offset).orderBy("pl.name", "asc");
+
+  const parsed = rows.map((loc) => ({
+    ...loc,
+    images: loc.images ? loc.images.split(",") : [],
+    slot_types: loc.slot_types ? JSON.parse(loc.slot_types) : [],
+    avg_rating: loc.avg_rating
+      ? parseFloat(Number(loc.avg_rating).toFixed(2))
+      : null,
+  }));
+
+  return { locations: parsed, total };
+}
+
 // ================== GET BY OWNER ==================
 export async function getLocationsByOwner(ownerId, { page = 1, limit = 20 }) {
   const offset = (page - 1) * limit;

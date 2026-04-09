@@ -13,6 +13,7 @@ router.get(
   locationController.getMyLocations
 );
 router.get("/", locationController.getAll);
+router.get("/search", locationController.search);
 router.get("/:id", locationController.getOne);
 
 router.post("/", authMiddleware, allowRoles("owner", "admin", "super_admin"), locationController.create);

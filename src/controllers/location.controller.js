@@ -32,6 +32,22 @@ export async function getAll(req, res) {
   }
 }
 
+export async function search(req, res) {
+  try {
+    const { query, city } = req.query;
+    const { page, limit } = parsePagination(req.query);
+
+    if (!query && !city) {
+      return errorResponse(res, "Provide at least one search param: query or city", 400);
+    }
+
+    const { locations, total } = await locationService.searchLocations({ query, city, page, limit });
+    return paginatedResponse(res, locations, total, page, limit, "Search results");
+  } catch (err) {
+    return errorResponse(res, err.message || "Server error", err?.statusCode || 500);
+  }
+}
+
 export async function getOne(req, res) {
   try {
     const location = await locationService.getLocationById(req.params.id);
