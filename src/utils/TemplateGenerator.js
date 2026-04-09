@@ -530,4 +530,196 @@ export const generateContactAutoReplyTemplate = (name) => `
   </div>
 </body>
 </html>
-`;\n\n// ─── PARKING REMINDER (30 min / 10 min before expiry) ────────────────────────\nexport const generateParkingReminderTemplate = (name, locationName, endTime, minutesLeft) => `\n<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>\n  <title>SahiSpot | Parking Reminder</title>\n  <style>\n    body { margin:0; padding:0; background:#f0f4f8; font-family:'Poppins','Segoe UI',sans-serif; color:#1f2937; }\n    .wrapper { padding:40px 16px; }\n    .container { max-width:600px; margin:auto; background:#fff; border-radius:18px; overflow:hidden; box-shadow:0 16px 48px rgba(0,0,0,0.12); }\n    .header { background:linear-gradient(135deg,#f97316,#ea580c); padding:36px 24px; text-align:center; color:#fff; }\n    .header .icon { font-size:48px; margin-bottom:10px; }\n    .header h1 { margin:0; font-size:26px; font-weight:700; letter-spacing:0.5px; }\n    .header p { margin:6px 0 0; font-size:14px; opacity:0.9; }\n    .badge { display:inline-block; background:rgba(255,255,255,0.2); border-radius:999px; padding:4px 14px; font-size:12px; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:12px; }\n    .content { padding:40px 32px; }\n    .greeting { font-size:18px; font-weight:600; margin-bottom:12px; color:#111827; }\n    .text { font-size:15px; line-height:1.7; color:#4b5563; margin-bottom:20px; }\n    .info-card { background:#fff7ed; border:1px solid #fed7aa; border-left:5px solid #f97316; border-radius:12px; padding:20px 24px; margin:24px 0; }\n    .info-card .label { font-size:12px; color:#9a3412; text-transform:uppercase; letter-spacing:0.6px; margin-bottom:4px; }\n    .info-card .value { font-size:17px; font-weight:700; color:#7c2d12; }\n    .timer { text-align:center; margin:28px 0; }\n    .timer .mins { font-size:56px; font-weight:800; color:#ea580c; line-height:1; }\n    .timer .mins-label { font-size:14px; color:#6b7280; margin-top:4px; }\n    .cta { display:block; background:linear-gradient(135deg,#f97316,#ea580c); color:#fff; text-decoration:none; text-align:center; border-radius:12px; padding:16px; font-size:16px; font-weight:700; margin:24px 0 0; box-shadow:0 4px 18px rgba(249,115,22,0.4); }\n    .footer { background:#f9fafb; text-align:center; padding:20px; font-size:12px; color:#9ca3af; border-top:1px solid #e5e7eb; }\n    @media(max-width:600px){ .content{ padding:28px 20px; } }\n  </style>\n</head>\n<body>\n  <div class="wrapper">\n    <div class="container">\n      <div class="header">\n        <div class="badge">⏰ Parking Alert</div>\n        <div class="icon">🚗</div>\n        <h1>Your Parking Is Ending Soon!</h1>\n        <p>SahiSpot — Smart Parking Solutions</p>\n      </div>\n      <div class="content">\n        <p class="greeting">Hi \${name},</p>\n        <p class="text">Your parking session at <strong>\${locationName}</strong> is about to end. Please return to your vehicle or extend your booking to avoid overstay penalties.</p>\n        <div class="timer">\n          <div class="mins">\${minutesLeft}</div>\n          <div class="mins-label">MINUTES REMAINING</div>\n        </div>\n        <div class="info-card">\n          <div class="label">Parking Ends At</div>\n          <div class="value">\${endTime}</div>\n        </div>\n        <p class="text">⚠️ After your booking expires, a <strong>15-minute grace period</strong> applies. After that, overstay charges at <strong>2× the hourly rate</strong> will begin automatically.</p>\n        <a href="https://sahi-spotv.vercel.app/dashboard" class="cta">Extend My Parking Now →</a>\n      </div>\n      <div class="footer">© \${new Date().getFullYear()} SahiSpot — All Rights Reserved<br/>Need help? <a href="mailto:support@sahispot.com" style="color:#f97316;">support@sahispot.com</a></div>\n    </div>\n  </div>\n</body>\n</html>\n`;\n\n// ─── OVERSTAY PENALTY ALERT ───────────────────────────────────────────────────\nexport const generateOverstayAlertTemplate = (name, locationName, overstayCharge, graceEndTime) => `\n<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>\n  <title>SahiSpot | Overstay Penalty</title>\n  <style>\n    body { margin:0; padding:0; background:#fef2f2; font-family:'Poppins','Segoe UI',sans-serif; color:#1f2937; }\n    .wrapper { padding:40px 16px; }\n    .container { max-width:600px; margin:auto; background:#fff; border-radius:18px; overflow:hidden; box-shadow:0 16px 48px rgba(239,68,68,0.15); }\n    .header { background:linear-gradient(135deg,#dc2626,#991b1b); padding:36px 24px; text-align:center; color:#fff; }\n    .header .icon { font-size:52px; margin-bottom:10px; }\n    .header h1 { margin:0; font-size:26px; font-weight:700; }\n    .header p { margin:6px 0 0; font-size:14px; opacity:0.88; }\n    .badge { display:inline-block; background:rgba(255,255,255,0.18); border-radius:999px; padding:4px 14px; font-size:12px; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:12px; }\n    .content { padding:40px 32px; }\n    .greeting { font-size:18px; font-weight:600; margin-bottom:12px; color:#111827; }\n    .text { font-size:15px; line-height:1.7; color:#4b5563; margin-bottom:20px; }\n    .penalty-card { background:#fef2f2; border:2px solid #fecaca; border-radius:14px; padding:24px; text-align:center; margin:24px 0; }\n    .penalty-card .label { font-size:13px; color:#991b1b; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:8px; }\n    .penalty-card .amount { font-size:44px; font-weight:800; color:#dc2626; }\n    .penalty-card .per { font-size:13px; color:#6b7280; margin-top:4px; }\n    .info-box { background:#fff7f7; border-left:4px solid #dc2626; border-radius:8px; padding:16px 20px; margin:20px 0; font-size:14px; color:#7f1d1d; line-height:1.6; }\n    .cta { display:block; background:linear-gradient(135deg,#dc2626,#b91c1c); color:#fff; text-decoration:none; text-align:center; border-radius:12px; padding:16px; font-size:16px; font-weight:700; margin:24px 0 0; box-shadow:0 4px 18px rgba(220,38,38,0.4); }\n    .footer { background:#f9fafb; text-align:center; padding:20px; font-size:12px; color:#9ca3af; border-top:1px solid #e5e7eb; }\n    @media(max-width:600px){ .content{ padding:28px 20px; } }\n  </style>\n</head>\n<body>\n  <div class="wrapper">\n    <div class="container">\n      <div class="header">\n        <div class="badge">🚨 Overstay Alert</div>\n        <div class="icon">⚠️</div>\n        <h1>Overstay Penalty Has Started</h1>\n        <p>SahiSpot — Smart Parking Solutions</p>\n      </div>\n      <div class="content">\n        <p class="greeting">Hi \${name},</p>\n        <p class="text">Your parking session at <strong>\${locationName}</strong> has exceeded its booked time and the grace period has ended. <strong>Overstay charges are now active.</strong></p>\n        <div class="penalty-card">\n          <div class="label">Current Overstay Charge</div>\n          <div class="amount">₹\${overstayCharge}</div>\n          <div class="per">Charged at 2× the standard hourly rate</div>\n        </div>\n        <div class="info-box">\n          <strong>Grace Period Ended:</strong> \${graceEndTime}<br/>\n          Overstay charges accumulate every hour at <strong>2× your booked hourly rate</strong> until you extend or vacate the spot.\n        </div>\n        <p class="text">Please extend your booking immediately or vacate the parking spot to stop further charges.</p>\n        <a href="https://sahi-spotv.vercel.app/dashboard" class="cta">Extend My Booking Now →</a>\n      </div>\n      <div class="footer">© \${new Date().getFullYear()} SahiSpot — All Rights Reserved<br/>Need help? <a href="mailto:support@sahispot.com" style="color:#dc2626;">support@sahispot.com</a></div>\n    </div>\n  </div>\n</body>\n</html>\n`;\n\n// ─── BOOKING EXTENSION CONFIRMATION ──────────────────────────────────────────\nexport const generateExtensionConfirmTemplate = (name, locationName, newEndTime, extraHours, extraCharge) => `\n<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>\n  <title>SahiSpot | Booking Extended</title>\n  <style>\n    body { margin:0; padding:0; background:#f0fdf4; font-family:'Poppins','Segoe UI',sans-serif; color:#1f2937; }\n    .wrapper { padding:40px 16px; }\n    .container { max-width:600px; margin:auto; background:#fff; border-radius:18px; overflow:hidden; box-shadow:0 16px 48px rgba(16,185,129,0.15); }\n    .header { background:linear-gradient(135deg,#059669,#064e3b); padding:36px 24px; text-align:center; color:#fff; }\n    .header .icon { font-size:52px; margin-bottom:10px; }\n    .header h1 { margin:0; font-size:26px; font-weight:700; }\n    .header p { margin:6px 0 0; font-size:14px; opacity:0.88; }\n    .badge { display:inline-block; background:rgba(255,255,255,0.18); border-radius:999px; padding:4px 14px; font-size:12px; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:12px; }\n    .content { padding:40px 32px; }\n    .greeting { font-size:18px; font-weight:600; margin-bottom:12px; color:#111827; }\n    .text { font-size:15px; line-height:1.7; color:#4b5563; margin-bottom:20px; }\n    .confirm-card { background:#f0fdf4; border:2px solid #a7f3d0; border-radius:14px; padding:24px; margin:24px 0; }\n    .row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #d1fae5; }\n    .row:last-child { border-bottom:none; }\n    .row-label { font-size:13px; color:#065f46; text-transform:uppercase; letter-spacing:0.5px; }\n    .row-value { font-size:15px; font-weight:700; color:#064e3b; }\n    .cta { display:block; background:linear-gradient(135deg,#059669,#047857); color:#fff; text-decoration:none; text-align:center; border-radius:12px; padding:16px; font-size:16px; font-weight:700; margin:24px 0 0; box-shadow:0 4px 18px rgba(5,150,105,0.4); }\n    .footer { background:#f9fafb; text-align:center; padding:20px; font-size:12px; color:#9ca3af; border-top:1px solid #e5e7eb; }\n    @media(max-width:600px){ .content{ padding:28px 20px; } .row{ flex-direction:column; align-items:flex-start; gap:4px; } }\n  </style>\n</head>\n<body>\n  <div class="wrapper">\n    <div class="container">\n      <div class="header">\n        <div class="badge">✅ Extension Confirmed</div>\n        <div class="icon">🎉</div>\n        <h1>Parking Extended Successfully!</h1>\n        <p>SahiSpot — Smart Parking Solutions</p>\n      </div>\n      <div class="content">\n        <p class="greeting">Hi \${name},</p>\n        <p class="text">Great news! Your parking session at <strong>\${locationName}</strong> has been successfully extended. Here's a summary of the changes:</p>\n        <div class="confirm-card">\n          <div class="row">\n            <span class="row-label">Location</span>\n            <span class="row-value">\${locationName}</span>\n          </div>\n          <div class="row">\n            <span class="row-label">Extended By</span>\n            <span class="row-value">\${extraHours} Hour\${Number(extraHours) > 1 ? 's' : ''}</span>\n          </div>\n          <div class="row">\n            <span class="row-label">New End Time</span>\n            <span class="row-value">\${newEndTime}</span>\n          </div>\n          <div class="row">\n            <span class="row-label">Extra Charge</span>\n            <span class="row-value">₹\${extraCharge}</span>\n          </div>\n        </div>\n        <p class="text">You're all set! Enjoy your extended parking. You'll receive a reminder before the new end time.</p>\n        <a href="https://sahi-spotv.vercel.app/dashboard" class="cta">View My Bookings →</a>\n      </div>\n      <div class="footer">© \${new Date().getFullYear()} SahiSpot — All Rights Reserved<br/>Need help? <a href="mailto:support@sahispot.com" style="color:#059669;">support@sahispot.com</a></div>\n    </div>\n  </div>\n</body>\n</html>\n`;
+`;
+
+// ─── PARKING REMINDER (30 min / 10 min before expiry) ────────────────────────
+export const generateParkingReminderTemplate = (name, locationName, endTime, minutesLeft) => `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SahiSpot | Parking Reminder</title>
+  <style>
+    body { margin:0; padding:0; background:#f0f4f8; font-family:'Poppins','Segoe UI',sans-serif; color:#1f2937; }
+    .wrapper { padding:40px 16px; }
+    .container { max-width:600px; margin:auto; background:#fff; border-radius:18px; overflow:hidden; box-shadow:0 16px 48px rgba(0,0,0,0.12); }
+    .header { background:linear-gradient(135deg,#f97316,#ea580c); padding:36px 24px; text-align:center; color:#fff; }
+    .header .icon { font-size:48px; margin-bottom:10px; }
+    .header h1 { margin:0; font-size:26px; font-weight:700; letter-spacing:0.5px; }
+    .header p { margin:6px 0 0; font-size:14px; opacity:0.9; }
+    .badge { display:inline-block; background:rgba(255,255,255,0.2); border-radius:999px; padding:4px 14px; font-size:12px; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:12px; }
+    .content { padding:40px 32px; }
+    .greeting { font-size:18px; font-weight:600; margin-bottom:12px; color:#111827; }
+    .text { font-size:15px; line-height:1.7; color:#4b5563; margin-bottom:20px; }
+    .info-card { background:#fff7ed; border:1px solid #fed7aa; border-left:5px solid #f97316; border-radius:12px; padding:20px 24px; margin:24px 0; }
+    .info-card .label { font-size:12px; color:#9a3412; text-transform:uppercase; letter-spacing:0.6px; margin-bottom:4px; }
+    .info-card .value { font-size:17px; font-weight:700; color:#7c2d12; }
+    .timer { text-align:center; margin:28px 0; }
+    .timer .mins { font-size:56px; font-weight:800; color:#ea580c; line-height:1; }
+    .timer .mins-label { font-size:14px; color:#6b7280; margin-top:4px; }
+    .cta { display:block; background:linear-gradient(135deg,#f97316,#ea580c); color:#fff; text-decoration:none; text-align:center; border-radius:12px; padding:16px; font-size:16px; font-weight:700; margin:24px 0 0; box-shadow:0 4px 18px rgba(249,115,22,0.4); }
+    .footer { background:#f9fafb; text-align:center; padding:20px; font-size:12px; color:#9ca3af; border-top:1px solid #e5e7eb; }
+    @media(max-width:600px){ .content{ padding:28px 20px; } }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="container">
+      <div class="header">
+        <div class="badge">⏰ Parking Alert</div>
+        <div class="icon">🚗</div>
+        <h1>Your Parking Is Ending Soon!</h1>
+        <p>SahiSpot — Smart Parking Solutions</p>
+      </div>
+      <div class="content">
+        <p class="greeting">Hi ${name},</p>
+        <p class="text">Your parking session at <strong>${locationName}</strong> is about to end. Please return to your vehicle or extend your booking to avoid overstay penalties.</p>
+        <div class="timer">
+          <div class="mins">${minutesLeft}</div>
+          <div class="mins-label">MINUTES REMAINING</div>
+        </div>
+        <div class="info-card">
+          <div class="label">Parking Ends At</div>
+          <div class="value">${endTime}</div>
+        </div>
+        <p class="text">⚠️ After your booking expires, a <strong>15-minute grace period</strong> applies. After that, overstay charges at <strong>2× the hourly rate</strong> will begin automatically.</p>
+        <a href="https://sahi-spotv.vercel.app/dashboard" class="cta">Extend My Parking Now →</a>
+      </div>
+      <div class="footer">© ${new Date().getFullYear()} SahiSpot — All Rights Reserved<br/>Need help? <a href="mailto:support@sahispot.com" style="color:#f97316;">support@sahispot.com</a></div>
+    </div>
+  </div>
+</body>
+</html>
+`;
+
+// ─── OVERSTAY PENALTY ALERT ───────────────────────────────────────────────────
+export const generateOverstayAlertTemplate = (name, locationName, overstayCharge, graceEndTime) => `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SahiSpot | Overstay Penalty</title>
+  <style>
+    body { margin:0; padding:0; background:#fef2f2; font-family:'Poppins','Segoe UI',sans-serif; color:#1f2937; }
+    .wrapper { padding:40px 16px; }
+    .container { max-width:600px; margin:auto; background:#fff; border-radius:18px; overflow:hidden; box-shadow:0 16px 48px rgba(239,68,68,0.15); }
+    .header { background:linear-gradient(135deg,#dc2626,#991b1b); padding:36px 24px; text-align:center; color:#fff; }
+    .header .icon { font-size:52px; margin-bottom:10px; }
+    .header h1 { margin:0; font-size:26px; font-weight:700; }
+    .header p { margin:6px 0 0; font-size:14px; opacity:0.88; }
+    .badge { display:inline-block; background:rgba(255,255,255,0.18); border-radius:999px; padding:4px 14px; font-size:12px; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:12px; }
+    .content { padding:40px 32px; }
+    .greeting { font-size:18px; font-weight:600; margin-bottom:12px; color:#111827; }
+    .text { font-size:15px; line-height:1.7; color:#4b5563; margin-bottom:20px; }
+    .penalty-card { background:#fef2f2; border:2px solid #fecaca; border-radius:14px; padding:24px; text-align:center; margin:24px 0; }
+    .penalty-card .label { font-size:13px; color:#991b1b; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:8px; }
+    .penalty-card .amount { font-size:44px; font-weight:800; color:#dc2626; }
+    .penalty-card .per { font-size:13px; color:#6b7280; margin-top:4px; }
+    .info-box { background:#fff7f7; border-left:4px solid #dc2626; border-radius:8px; padding:16px 20px; margin:20px 0; font-size:14px; color:#7f1d1d; line-height:1.6; }
+    .cta { display:block; background:linear-gradient(135deg,#dc2626,#b91c1c); color:#fff; text-decoration:none; text-align:center; border-radius:12px; padding:16px; font-size:16px; font-weight:700; margin:24px 0 0; box-shadow:0 4px 18px rgba(220,38,38,0.4); }
+    .footer { background:#f9fafb; text-align:center; padding:20px; font-size:12px; color:#9ca3af; border-top:1px solid #e5e7eb; }
+    @media(max-width:600px){ .content{ padding:28px 20px; } }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="container">
+      <div class="header">
+        <div class="badge">🚨 Overstay Alert</div>
+        <div class="icon">⚠️</div>
+        <h1>Overstay Penalty Has Started</h1>
+        <p>SahiSpot — Smart Parking Solutions</p>
+      </div>
+      <div class="content">
+        <p class="greeting">Hi ${name},</p>
+        <p class="text">Your parking session at <strong>${locationName}</strong> has exceeded its booked time and the grace period has ended. <strong>Overstay charges are now active.</strong></p>
+        <div class="penalty-card">
+          <div class="label">Current Overstay Charge</div>
+          <div class="amount">₹${overstayCharge}</div>
+          <div class="per">Charged at 2× the standard hourly rate</div>
+        </div>
+        <div class="info-box">
+          <strong>Grace Period Ended:</strong> ${graceEndTime}<br/>
+          Overstay charges accumulate every hour at <strong>2× your booked hourly rate</strong> until you extend or vacate the spot.
+        </div>
+        <p class="text">Please extend your booking immediately or vacate the parking spot to stop further charges.</p>
+        <a href="https://sahi-spotv.vercel.app/dashboard" class="cta">Extend My Booking Now →</a>
+      </div>
+      <div class="footer">© ${new Date().getFullYear()} SahiSpot — All Rights Reserved<br/>Need help? <a href="mailto:support@sahispot.com" style="color:#dc2626;">support@sahispot.com</a></div>
+    </div>
+  </div>
+</body>
+</html>
+`;
+
+// ─── BOOKING EXTENSION CONFIRMATION ──────────────────────────────────────────
+export const generateExtensionConfirmTemplate = (name, locationName, newEndTime, extraHours, extraCharge) => `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SahiSpot | Booking Extended</title>
+  <style>
+    body { margin:0; padding:0; background:#f0fdf4; font-family:'Poppins','Segoe UI',sans-serif; color:#1f2937; }
+    .wrapper { padding:40px 16px; }
+    .container { max-width:600px; margin:auto; background:#fff; border-radius:18px; overflow:hidden; box-shadow:0 16px 48px rgba(16,185,129,0.15); }
+    .header { background:linear-gradient(135deg,#059669,#064e3b); padding:36px 24px; text-align:center; color:#fff; }
+    .header .icon { font-size:52px; margin-bottom:10px; }
+    .header h1 { margin:0; font-size:26px; font-weight:700; }
+    .header p { margin:6px 0 0; font-size:14px; opacity:0.88; }
+    .badge { display:inline-block; background:rgba(255,255,255,0.18); border-radius:999px; padding:4px 14px; font-size:12px; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:12px; }
+    .content { padding:40px 32px; }
+    .greeting { font-size:18px; font-weight:600; margin-bottom:12px; color:#111827; }
+    .text { font-size:15px; line-height:1.7; color:#4b5563; margin-bottom:20px; }
+    .confirm-card { background:#f0fdf4; border:2px solid #a7f3d0; border-radius:14px; padding:24px; margin:24px 0; }
+    .row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #d1fae5; }
+    .row:last-child { border-bottom:none; }
+    .row-label { font-size:13px; color:#065f46; text-transform:uppercase; letter-spacing:0.5px; }
+    .row-value { font-size:15px; font-weight:700; color:#064e3b; }
+    .cta { display:block; background:linear-gradient(135deg,#059669,#047857); color:#fff; text-decoration:none; text-align:center; border-radius:12px; padding:16px; font-size:16px; font-weight:700; margin:24px 0 0; box-shadow:0 4px 18px rgba(5,150,105,0.4); }
+    .footer { background:#f9fafb; text-align:center; padding:20px; font-size:12px; color:#9ca3af; border-top:1px solid #e5e7eb; }
+    @media(max-width:600px){ .content{ padding:28px 20px; } .row{ flex-direction:column; align-items:flex-start; gap:4px; } }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="container">
+      <div class="header">
+        <div class="badge">✅ Extension Confirmed</div>
+        <div class="icon">🎉</div>
+        <h1>Parking Extended Successfully!</h1>
+        <p>SahiSpot — Smart Parking Solutions</p>
+      </div>
+      <div class="content">
+        <p class="greeting">Hi ${name},</p>
+        <p class="text">Great news! Your parking session at <strong>${locationName}</strong> has been successfully extended. Here's a summary of the changes:</p>
+        <div class="confirm-card">
+          <div class="row">
+            <span class="row-label">Location</span>
+            <span class="row-value">${locationName}</span>
+          </div>
+          <div class="row">
+            <span class="row-label">Extended By</span>
+            <span class="row-value">${extraHours} Hour${Number(extraHours) > 1 ? 's' : ''}</span>
+          </div>
+          <div class="row">
+            <span class="row-label">New End Time</span>
+            <span class="row-value">${newEndTime}</span>
+          </div>
+          <div class="row">
+            <span class="row-label">Extra Charge</span>
+            <span class="row-value">₹${extraCharge}</span>
+          </div>
+        </div>
+        <p class="text">You're all set! Enjoy your extended parking. You'll receive a reminder before the new end time.</p>
+        <a href="https://sahi-spotv.vercel.app/dashboard" class="cta">View My Bookings →</a>
+      </div>
+      <div class="footer">© ${new Date().getFullYear()} SahiSpot — All Rights Reserved<br/>Need help? <a href="mailto:support@sahispot.com" style="color:#059669;">support@sahispot.com</a></div>
+    </div>
+  </div>
+</body>
+</html>
+`;
