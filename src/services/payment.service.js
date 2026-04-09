@@ -52,8 +52,10 @@ export async function createRazorpayOrder(userId, data) {
 
     return {
       orderId: razorpayOrder.id,
-      amount: razorpayOrder.amount,
+      amount: razorpayOrder.amount,           // in paise (e.g. 2000)
+      amountRs: razorpayOrder.amount / 100,   // in rupees (e.g. 20) — for display
       currency: razorpayOrder.currency,
+      razorpay_key: process.env.RAZORPAY_KEY_ID,  // send key to frontend
       dbPaymentId
     };
   });
