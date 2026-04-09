@@ -14,7 +14,7 @@ export async function createRazorpayOrder(userId, data) {
     }
 
     const amount = parseFloat(booking.total_price);
-    const platform_fee = parseFloat(booking.commission);
+    const platform_fee = parseFloat(booking.platform_fee);
     const owner_amount = parseFloat(booking.owner_earnings);
 
     let existingPending = await trx("payments")
