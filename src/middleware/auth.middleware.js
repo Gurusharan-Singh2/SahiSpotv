@@ -39,13 +39,18 @@ export const adminAuth = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+    console.log(decoded);
+    
     const admin = await db("users")
       .where({ id: decoded.id })
       .first(["id", "name", "email", "role"]);
+         console.log(admin);
 
     if (!admin) {
       return res.status(401).json({ message: "Unauthorized: Admin not found" });
     }
+ 
+    
 
     if (!["admin", "super_admin"].includes(admin.role)) {
       return res.status(403).json({ message: "Forbidden: Admin access required" });
