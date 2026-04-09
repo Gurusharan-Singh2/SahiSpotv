@@ -13,12 +13,11 @@ export async function createRazorpayOrder(userId, data) {
       throw { statusCode: 400, message: `Cannot pay for a booking with status '${booking.status}'` };
     }
 
-    const baseAmount = parseFloat(booking.total_price || 0);
-    const platformFee = parseFloat(booking.platform_fee || 0);
-
-    const amount = baseAmount + platformFee;
-    const platform_fee = parseFloat(booking.platform_fee);
-    const owner_amount = parseFloat(booking.owner_earnings);
+    // total_price already includes platform_fee (owner_earnings = total_price - platform_fee)
+    // so we should NOT add platform_fee again on top
+    const amount = parseFloat(booking.total_price || 0);
+    const platform_fee = parseFloat(booking.platform_fee || 0);
+    const owner_amount = parseFloat(booking.owner_earnings || 0);
 
     let existingPending = await trx("payments")
       .where({ booking_id, payment_status: "pending" })
