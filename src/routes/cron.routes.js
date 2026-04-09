@@ -4,10 +4,11 @@ import { runCron } from "../controllers/cron.controller.js";
 const router = Router();
 
 /**
- * POST /api/v1/cron/run
- * Called every minute by Vercel Cron Jobs.
- * Secured by Authorization: Bearer <CRON_SECRET>
+ * POST or GET /api/v1/cron/run
+ * For cron-job.org: Use a GET request with ?secret=YOUR_CRON_SECRET
+ * For Vercel Cron: Vercel sends POST with Authorization: Bearer <CRON_SECRET>
  */
 router.post("/run", runCron);
+router.get("/run", runCron);
 
 export default router;
