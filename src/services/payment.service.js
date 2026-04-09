@@ -13,7 +13,10 @@ export async function createRazorpayOrder(userId, data) {
       throw { statusCode: 400, message: `Cannot pay for a booking with status '${booking.status}'` };
     }
 
-    const amount = parseFloat(booking.total_price);
+    const baseAmount = parseFloat(booking.total_price || 0);
+    const platformFee = parseFloat(booking.platform_fee || 0);
+
+    const amount = baseAmount + platformFee;
     const platform_fee = parseFloat(booking.platform_fee);
     const owner_amount = parseFloat(booking.owner_earnings);
 
@@ -76,9 +79,9 @@ export async function verifyRazorpayPayment(userId, data) {
     const payment = await trx("payments")
       .where({ booking_id, user_id: userId, payment_status: "pending" })
       .first();
-      
+
     if (!payment) {
-        throw { statusCode: 404, message: "Pending payment not found for this booking" };
+      throw { statusCode: 404, message: "Pending payment not found for this booking" };
     }
 
     await trx("payments").where({ id: payment.id }).update({
