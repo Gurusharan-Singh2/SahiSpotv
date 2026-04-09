@@ -11,6 +11,9 @@ import UserRouter from "./routes/user.js";
 import ContactRouter from "./routes/contact.js";
 import AdminRouter from "./routes/admin.routes.js";
 import ParkingRouter from "./routes/parking.routes.js";
+import CronRouter from "./routes/cron.routes.js";
+import { startReminderScheduler } from "./services/reminder.scheduler.js";
+
 
 const app = express();
 
@@ -58,10 +61,14 @@ app.use("/api/v1", UserRouter);
 app.use("/api/v1/contact", ContactRouter);
 app.use("/api/v1/admin", AdminRouter);
 app.use("/api/v1/parking", ParkingRouter);
+app.use("/api/v1/cron", CronRouter);          // Vercel Cron endpoint
 app.post("/api/v1/logout", (req, res) => {
   res.clearCookie("token", { httpOnly: true, sameSite: "strict" });
   res.json({ message: "Logged out successfully" });
 });
+
+// Local dev: setInterval scheduler. On Vercel this is a no-op (uses Cron Jobs instead).
+startReminderScheduler();
 
 export default app;
 

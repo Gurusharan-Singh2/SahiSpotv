@@ -60,3 +60,20 @@ export async function getBooking(req, res) {
     return errorResponse(res, err.message || "Server error", err?.statusCode || 500);
   }
 }
+
+export async function extendBooking(req, res) {
+  try {
+    const bookingId = Number(req.params.id);
+    const { extra_hours } = req.body;
+
+    const parsedHours = Number(extra_hours);
+    if (!parsedHours || parsedHours <= 0) {
+      return errorResponse(res, "extra_hours must be a positive number", 400);
+    }
+
+    const booking = await bookingService.extendBooking(bookingId, req.user.id, parsedHours);
+    return successResponse(res, booking, `Booking extended by ${parsedHours} hour(s) successfully`);
+  } catch (err) {
+    return errorResponse(res, err.message || "Server error", err?.statusCode || 500);
+  }
+}
