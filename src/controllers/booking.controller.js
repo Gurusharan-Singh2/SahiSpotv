@@ -77,3 +77,12 @@ export async function extendBooking(req, res) {
     return errorResponse(res, err.message || "Server error", err?.statusCode || 500);
   }
 }
+
+export async function checkoutBooking(req, res) {
+  try {
+    const booking = await bookingService.checkoutBooking(req.params.id, req.user.id);
+    return successResponse(res, booking, "Successfully checked out and slot freed");
+  } catch (err) {
+    return errorResponse(res, err.message || "Server error", err?.statusCode || 500);
+  }
+}

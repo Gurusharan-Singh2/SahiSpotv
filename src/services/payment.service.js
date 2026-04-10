@@ -13,11 +13,27 @@ export async function createRazorpayOrder(userId, data) {
       throw { statusCode: 400, message: `Cannot pay for a booking with status '${booking.status}'` };
     }
 
-    // total_price already includes platform_fee (owner_earnings = total_price - platform_fee)
-    // so we should NOT add platform_fee again on top
-    const amount = parseFloat(booking.total_price || 0);
-    const platform_fee = parseFloat(booking.platform_fee || 0);
-    const owner_amount = parseFloat(booking.owner_earnings || 0);
+    // Fetch sum of already paid amounts to compute difference (e.g. for overstay)
+    const prevPayments = await trx("payments")
+      .where({ booking_id, payment_status: "paid" })
+      .select(
+        trx.raw("SUM(amount) as sum_amount"),
+        trx.raw("SUM(platform_fee) as sum_platform"),
+        trx.raw("SUM(owner_amount) as sum_owner")
+      )
+      .first();
+
+    const sum_amount = parseFloat(prevPayments?.sum_amount || 0);
+    const sum_platform = parseFloat(prevPayments?.sum_platform || 0);
+    const sum_owner = parseFloat(prevPayments?.sum_owner || 0);
+
+    const amount = parseFloat((booking.total_price || 0) - sum_amount);
+    const platform_fee = parseFloat((booking.platform_fee || 0) - sum_platform);
+    const owner_amount = parseFloat((booking.owner_earnings || 0) - sum_owner);
+
+    if (amount <= 0) {
+      throw { statusCode: 400, message: "No pending amount to be paid." };
+    }
 
     let existingPending = await trx("payments")
       .where({ booking_id, payment_status: "pending" })
@@ -88,7 +104,8 @@ export async function verifyRazorpayPayment(userId, data) {
       transaction_id: razorpay_payment_id
     });
 
-    await trx("bookings").where({ id: booking_id }).update({ status: "completed" });
+    // Let the checkout flow handle the booking completion and slot freeing logic
+    // await trx("bookings").where({ id: booking_id }).update({ status: "completed" });
 
     await trx("platform_earnings").insert({
       booking_id,

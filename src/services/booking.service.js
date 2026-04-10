@@ -254,3 +254,43 @@ export async function extendBooking(bookingId, userId, extraHours) {
       .first();
   });
 }
+
+export async function checkoutBooking(bookingId, userId) {
+  return await db.transaction(async (trx) => {
+    // 1. Fetch booking
+    const booking = await trx("bookings").where({ id: bookingId }).first().forUpdate();
+    if (!booking) throw { statusCode: 404, message: "Booking not found" };
+    
+    const user = await trx("users").where({ id: userId }).first();
+    if (booking.user_id !== userId && !["admin", "super_admin", "owner"].includes(user?.role)) {
+      throw { statusCode: 403, message: "Forbidden" };
+    }
+
+    if (booking.status !== "booked") {
+      throw { statusCode: 400, message: `Cannot checkout a booking with status '${booking.status}'` };
+    }
+
+    // 2. Check if there's any unpaid balance
+    const prevPayments = await trx("payments")
+      .where({ booking_id: bookingId, payment_status: "paid" })
+      .select(trx.raw("SUM(amount) as sum_amount"))
+      .first();
+    
+    const paidAmount = parseFloat(prevPayments?.sum_amount || 0);
+    const amountDue = parseFloat((booking.total_price || 0) - paidAmount);
+
+    if (amountDue > 0) {
+      throw { statusCode: 400, message: `Please pay the remaining balance of Rs. ${amountDue} before checking out.` };
+    }
+
+    // 3. Mark completed
+    await trx("bookings").where({ id: bookingId }).update({ status: "completed" });
+
+    // 4. Free up the slot securely
+    await trx("parking_slot_types")
+      .where({ id: booking.slot_type_id })
+      .increment("available_slots", 1);
+
+    return trx("bookings").where({ id: bookingId }).first();
+  });
+}

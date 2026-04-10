@@ -13,6 +13,7 @@ router.get("/:id", bookingController.getBooking);
 
 router.patch("/:id/cancel", bookingController.cancelBooking);
 router.patch("/:id/complete", allowRoles("admin", "super_admin", "owner"), bookingController.completeBooking);
+router.post("/:id/checkout", allowRoles("user", "admin", "super_admin", "owner"), bookingController.checkoutBooking);
 
 // Extend booking: POST /bookings/:id/extend  { extra_hours: 1 | 2 | 8 }
 router.post("/:id/extend", allowRoles("user", "admin", "super_admin"), bookingController.extendBooking);
