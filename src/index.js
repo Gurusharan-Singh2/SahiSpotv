@@ -25,7 +25,7 @@ app.use(morgan(morganFormat));
 const allowedOrigins = [
   "http://localhost:5173",
   "https://sahi-spotv.vercel.app",
-  "https://yourapp.com", // keep or replace with your actual prod domain
+  "https://sahi-spot.vercel.app", // keep or replace with your actual prod domain
 ];
 
 app.use(
