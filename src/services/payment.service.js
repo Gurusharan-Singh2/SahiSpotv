@@ -104,6 +104,9 @@ export async function verifyRazorpayPayment(userId, data) {
       transaction_id: razorpay_payment_id
     });
 
+    // Mark the booking as paid too
+    await trx("bookings").where({ id: booking_id }).update({ payment_status: "paid" });
+
     // Let the checkout flow handle the booking completion and slot freeing logic
     // await trx("bookings").where({ id: booking_id }).update({ status: "completed" });
 
