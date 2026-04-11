@@ -7,6 +7,7 @@ router.use(authMiddleware);
 
 router.post("/order", paymentController.createOrder);
 router.post("/verify", paymentController.verifyPayment);
+router.post("/fail", paymentController.failPayment);
 router.get("/my", paymentController.myPayments);
 router.get("/booking/:bookingId", paymentController.getPaymentByBooking);
 

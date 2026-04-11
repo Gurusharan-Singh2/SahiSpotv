@@ -26,6 +26,18 @@ export async function verifyPayment(req, res) {
   }
 }
 
+export async function failPayment(req, res) {
+  try {
+    const missing = requireFields(req.body, ["booking_id"]);
+    if (missing.length) return errorResponse(res, `Missing fields: ${missing.join(", ")}`, 400);
+
+    const payment = await paymentService.markPaymentFailed(req.user.id, req.body);
+    return successResponse(res, payment, "Payment marked as failed and slot restored", 200);
+  } catch (err) {
+    return errorResponse(res, err.message || "Server error", err?.statusCode || 500);
+  }
+}
+
 export async function getPaymentByBooking(req, res) {
   try {
     const payment = await paymentService.getPaymentByBooking(req.params.bookingId);

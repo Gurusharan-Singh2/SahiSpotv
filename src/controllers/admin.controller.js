@@ -143,3 +143,105 @@ export const rejectParking = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+// ─── Get All Bookings (Admin) ────────────────────────────────────────────────
+export const getAllBookings = async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 50;
+    const page = parseInt(req.query.page) || 1;
+    const offset = (page - 1) * limit;
+
+    const bookings = await db("bookings as b")
+      .leftJoin("users as u", "u.id", "b.user_id")
+      .leftJoin("parking_locations as pl", "pl.id", "b.parking_location_id")
+      .select(
+        "b.id", "b.start_time", "b.end_time", "b.total_amount", "b.platform_fee",
+        "b.owner_earnings", "b.status", "b.payment_status", "b.created_at",
+        "u.name as user_name", "u.email as user_email",
+        "pl.name as parking_name"
+      )
+      .orderBy("b.created_at", "desc")
+      .limit(limit).offset(offset);
+
+    const [{ total }] = await db("bookings").count("id as total");
+
+    res.status(200).json({ success: true, bookings, total, page, limit });
+  } catch (error) {
+    console.error("Get all bookings error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+// ─── Get All Parking Locations (Admin) ───────────────────────────────────────
+export const getAllParkingLocations = async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 50;
+    const page = parseInt(req.query.page) || 1;
+    const offset = (page - 1) * limit;
+
+    let query = db("parking_locations as pl")
+      .leftJoin("users as u", "u.id", "pl.owner_id")
+      .select(
+        "pl.id", "pl.name", "pl.address", "pl.city", "pl.status", "pl.created_at",
+        "u.name as owner_name", "u.email as owner_email"
+      )
+      .orderBy("pl.created_at", "desc");
+
+    if (req.query.status) {
+      query = query.where("pl.status", req.query.status);
+    }
+
+    const locations = await query.limit(limit).offset(offset);
+
+    let countQuery = db("parking_locations");
+    if (req.query.status) countQuery = countQuery.where("status", req.query.status);
+    const [{ total }] = await countQuery.count("id as total");
+
+    res.status(200).json({ success: true, parkingLocations: locations, total, page, limit });
+  } catch (error) {
+    console.error("Get all parking locations error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+// ─── Suspend User (Admin) ─────────────────────────────────────────────────────
+export const suspendUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Check if user exists
+    const user = await db("users").where({ id: userId }).first();
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Rather than delete, we change role to "suspended" (or implement a status flag if it exists).
+    // Let's use role "suspended" or if there's no status column, modifying role breaks their login.
+    await db("users").where({ id: userId }).update({ role: "suspended" });
+
+    res.status(200).json({ success: true, message: "User suspended successfully" });
+  } catch (error) {
+    console.error("Suspend user error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+// ─── Suspend Parking Location (Admin) ─────────────────────────────────────────
+export const suspendParkingLocation = async (req, res) => {
+  try {
+    const { locationId } = req.params;
+
+    const updated = await db("parking_locations")
+      .where({ id: locationId })
+      .update({ status: "suspended" });
+
+    if (!updated) {
+      return res.status(404).json({ message: "Parking location not found" });
+    }
+
+    res.status(200).json({ success: true, message: "Parking location suspended successfully" });
+  } catch (error) {
+    console.error("Suspend parking error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};

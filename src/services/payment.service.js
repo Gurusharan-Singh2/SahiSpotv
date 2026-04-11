@@ -91,6 +91,15 @@ export async function verifyRazorpayPayment(userId, data) {
   }
 
   return db.transaction(async (trx) => {
+    const booking = await trx("bookings")
+      .where({ id: booking_id, user_id: userId })
+      .first()
+      .forUpdate();
+
+    if (!booking) {
+      throw { statusCode: 404, message: "Booking not found" };
+    }
+
     const payment = await trx("payments")
       .where({ booking_id, user_id: userId, payment_status: "pending" })
       .first();
@@ -114,6 +123,49 @@ export async function verifyRazorpayPayment(userId, data) {
       booking_id,
       amount: payment.platform_fee,
     });
+
+    return await trx("payments").where({ id: payment.id }).first();
+  });
+}
+
+export async function markPaymentFailed(userId, data) {
+  const { booking_id } = data;
+
+  return db.transaction(async (trx) => {
+    const booking = await trx("bookings")
+      .where({ id: booking_id, user_id: userId })
+      .first()
+      .forUpdate();
+
+    if (!booking) {
+      throw { statusCode: 404, message: "Booking not found" };
+    }
+
+    const payment = await trx("payments")
+      .where({ booking_id, user_id: userId, payment_status: "pending" })
+      .first()
+      .forUpdate();
+
+    if (!payment) {
+      throw { statusCode: 404, message: "Pending payment not found for this booking" };
+    }
+
+    if (booking.status !== "booked") {
+      throw { statusCode: 400, message: `Cannot fail payment for a booking with status '${booking.status}'` };
+    }
+
+    await trx("payments").where({ id: payment.id }).update({
+      payment_status: "failed",
+    });
+
+    await trx("bookings").where({ id: booking_id }).update({
+      payment_status: "failed",
+      status: "cancelled",
+    });
+
+    await trx("parking_slot_types")
+      .where({ id: booking.slot_type_id })
+      .increment("available_slots", 1);
 
     return await trx("payments").where({ id: payment.id }).first();
   });
