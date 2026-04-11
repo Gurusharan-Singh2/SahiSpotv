@@ -153,9 +153,9 @@ export const getAllBookings = async (req, res) => {
 
     const bookings = await db("bookings as b")
       .leftJoin("users as u", "u.id", "b.user_id")
-      .leftJoin("parking_locations as pl", "pl.id", "b.parking_location_id")
+      .leftJoin("parking_locations as pl", "pl.id", "b.location_id")
       .select(
-        "b.id", "b.start_time", "b.end_time", "b.total_amount", "b.platform_fee",
+        "b.id", "b.start_time", "b.end_time", "b.total_price as total_amount", "b.platform_fee",
         "b.owner_earnings", "b.status", "b.payment_status", "b.created_at",
         "u.name as user_name", "u.email as user_email",
         "pl.name as parking_name"
