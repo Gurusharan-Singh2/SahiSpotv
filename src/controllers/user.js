@@ -287,19 +287,22 @@ export const editProfile = async (req, res) => {
     }
 
     if (req.file) {
-      if (user.img) {
-        await deleteFromCloudinary(user.img);
+      if (user.image) {
+        await deleteFromCloudinary(user.image);
       }
 
       const imageUrl = await uploadToCloudinary(req.file.buffer);
 
-      await db("users").where({ id: userId }).update({ img: imageUrl });
+      await db("users").where({ id: userId }).update({ image: imageUrl });
     }
 
     const updatedUser = await db("users")
-      .select("id", "name", "email", "img","role")
+      .select("id", "name", "email", "image", "role")
       .where({ id: userId })
       .first();
+
+    await ensureRedisConnection();
+    await redis.del(`user:${userId}`);
 
     res.status(200).json({
       message: "Profile updated successfully",
