@@ -277,10 +277,10 @@ export async function checkoutBooking(bookingId, userId) {
       .first();
     
     const paidAmount = parseFloat(prevPayments?.sum_amount || 0);
-    const amountDue = parseFloat((booking.total_price || 0) - paidAmount);
+    const amountDue = parseFloat(booking.total_price || 0) - paidAmount;
 
-    if (amountDue > 0) {
-      throw { statusCode: 400, message: `Please pay the remaining balance of Rs. ${amountDue} before checking out.` };
+    if (amountDue > 0.01) {
+      throw { statusCode: 400, message: `Please pay the remaining balance of Rs. ${amountDue.toFixed(2)} before checking out.` };
     }
 
     // 3. Mark completed

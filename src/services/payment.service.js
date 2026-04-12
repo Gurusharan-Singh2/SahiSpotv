@@ -31,7 +31,7 @@ export async function createRazorpayOrder(userId, data) {
     const platform_fee = parseFloat((booking.platform_fee || 0) - sum_platform);
     const owner_amount = parseFloat((booking.owner_earnings || 0) - sum_owner);
 
-    if (amount <= 0) {
+    if (amount <= 0.01) {
       throw { statusCode: 400, message: "No pending amount to be paid." };
     }
 
